@@ -1,0 +1,28 @@
+$form: 'antd-ext-form';
+
+.#{$form} {
+}
+
+.#{$form}-item-flex {
+  display: flex !important;
+
+  .ant-form-item-control-wrapper {
+    flex: 1;
+  }
+}
+
+.#{$form}-btn-group-right {
+  height: 40px;
+  button {
+    font-size: 12px;
+    &:last-child {
+      margin-right: 16px;
+    }
+  }
+}
+
+.#{$form}-flex-cnt-right {
+  display: flex !important;
+  align-items: center;
+  flex-direction: row-reverse;
+}
