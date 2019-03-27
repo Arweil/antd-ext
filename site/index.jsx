@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { LocaleProvider } from 'antd';
 import zhCN from 'antd/lib/locale-provider/zh_CN'; // 语言包
 import 'antd/dist/antd.css';
-import Root from './Root';
+import Root from '@site/routes/Root';
 
 const render = () => {
   ReactDOM.render(

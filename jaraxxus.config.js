@@ -21,13 +21,14 @@ const build = {
 };
 
 module.exports = {
-  entry: 'test/index.jsx',
-  srcPath: ['test', 'src'],
-  appHtml: 'test/index.html',
+  entry: 'site/index.jsx',
+  srcPath: ['site', 'src'],
+  appHtml: 'site/index.html',
   cssModules: false,
   resolveExtensions: ['.js', '.jsx', '.scss'],
   resolveAlias: {
     '@': 'src',
+    '@site': 'site',
   },
   dev,
   build,

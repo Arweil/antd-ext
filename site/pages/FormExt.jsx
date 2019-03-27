@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { hot } from 'react-hot-loader';
 import FormExt from '@/FormExt';
-import { Card, Button } from 'antd';
+import { Card, Button, Breadcrumb } from 'antd';
 
-class Root extends Component {
+export default class Root extends Component {
   constructor(props) {
     super(props);
     this.formB = React.createRef();
@@ -11,7 +10,14 @@ class Root extends Component {
 
   render() {
     return (
-      <div style={{ padding: 20 }}>
+      <div>
+        <Card style={{ marginBottom: 20 }}>
+          <Breadcrumb>
+            <Breadcrumb.Item>Home</Breadcrumb.Item>
+            <Breadcrumb.Item>FormExt</Breadcrumb.Item>
+          </Breadcrumb>
+        </Card>
+
         <Card
           title="Form Ext A"
           style={{ marginBottom: 20 }}
@@ -71,6 +77,7 @@ class Root extends Component {
         </Card>
         <Card
           title="Form Ext B"
+          style={{ marginBottom: 20 }}
           extra={
             <div>
               <Button
@@ -171,9 +178,11 @@ class Root extends Component {
             ]}
           />
         </Card>
+
+        <Card title="Form Ext C">
+          111
+        </Card>
       </div>
     );
   }
 }
-
-export default hot(module)(Root);
