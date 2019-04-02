@@ -17,7 +17,7 @@ const build = {
   assetsSubDirectory: 'static', // 资源目录
   assetsRoot: 'dist', // 打包目录
   productionSourceMap: false, // sourcemap css + js
-  bundleAnalyzerReport: false, // webpack-bundle-analyzer 是否启用
+  bundleAnalyzerReport: true, // webpack-bundle-analyzer 是否启用
 };
 
 module.exports = {

@@ -2,6 +2,18 @@ import React, { Component } from 'react';
 import FormExt from '@/FormExt';
 import { Card, Button, Breadcrumb } from 'antd';
 
+const dataMap = {
+  itemA: 'item A',
+  itemB: 'item B',
+  itemC: 'item C',
+  itemD: 'item D',
+  itemE: 'item E',
+  itemF: 'item F',
+  itemG: 'item G',
+  itemH: 'item H',
+  itemI: 'item I',
+};
+
 export default class Root extends Component {
   constructor(props) {
     super(props);
@@ -160,11 +172,25 @@ export default class Root extends Component {
                 },
               },
               {
-                span: 24,
                 label: 'Label 5',
+                type: 'select',
+                formItemKey: 'keyE',
+                decoratorOpt: {
+                  rules: [{
+                    required: true,
+                  }],
+                },
+                mode: 'multiple',
+                optionAll: false,
+                dataMap,
+                maxTagCount: 3,
+              },
+              {
+                span: 24,
+                label: 'Label 6',
                 type: 'textarea',
                 noFormItemLayout: true,
-                formItemKey: 'keyE',
+                formItemKey: 'keyF',
                 autosize: {
                   minRows: 3,
                   maxRows: 4,

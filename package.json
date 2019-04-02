@@ -4,7 +4,8 @@
   "description": "ant-design组件库拓展",
   "main": "index.js",
   "scripts": {
-    "dev": "jaraxxus start"
+    "dev": "jaraxxus start",
+    "build": "jaraxxus build"
   },
   "author": "",
   "license": "ISC",
@@ -20,6 +21,7 @@
     "@babel/preset-react": "^7.0.0",
     "autoprefixer": "^9.1.1",
     "babel-eslint": "8.2.6",
+    "babel-plugin-import": "^1.11.0",
     "eslint": "^5.4.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-compat": "^2.6.3",

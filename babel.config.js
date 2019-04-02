@@ -1,4 +1,5 @@
 module.exports = {
+  // 从后向前执行
   presets: [
     [
       require.resolve('@babel/preset-env'),
@@ -23,8 +24,27 @@ module.exports = {
     ],
     require.resolve('@babel/preset-react'),
   ],
+  // 从前往后执行
   plugins: [
     require.resolve('react-hot-loader/babel'),
+    [
+      require.resolve('babel-plugin-import'),
+      {
+        libraryName: 'antd',
+        libraryDirectory: 'lib', // default is lib
+        style: true,
+      },
+      'antd',
+    ],
+    [
+      require.resolve('babel-plugin-import'),
+      {
+        libraryName: 'lodash',
+        libraryDirectory: 'lib', // default is lib
+        camel2DashComponentName: false,
+      },
+      'lodash',
+    ],
     require.resolve('@babel/plugin-syntax-dynamic-import'),
     require.resolve('@babel/plugin-proposal-class-properties'),
     require.resolve('@babel/plugin-proposal-export-default-from'),
