@@ -57,7 +57,7 @@ export default class AppLayout extends PureComponent {
         </Sider>
         <Layout>
           <Header style={{ background: '#fff', padding: 0 }} />
-          <div style={{ 'overflow-y': 'auto' }}>
+          <div style={{ overflowY: 'auto' }}>
             <div className="main">
               <Content style={{ padding: 20 }}>
                 <RoutesConf />
