@@ -1,16 +1,21 @@
 import React from 'react';
 import { Select } from 'antd';
+import { FSelectProps } from './types';
+import { OptionProps } from 'antd/lib/select';
 
 const { Option } = Select;
 
-const onFilterOption = (input, option) => {
-  return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+const onFilterOption = (input: string, option: React.ReactElement<OptionProps>) => {
+  if (typeof option.props.children === 'string') {
+    return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+  }
+  return option;
 };
 
-export default (props) => {
+export default function FSelect(props: FSelectProps) {
   const {
     decoratorOpt,
-    form,
+    rcform,
     formItemKey,
     formClassName,
     dataMap = {}, // 数据绑定 数据源
@@ -24,11 +29,11 @@ export default (props) => {
     return `.${item}`;
   });
 
-  return form.getFieldDecorator(formItemKey, decoratorOpt)(
+  return rcform.getFieldDecorator(formItemKey, decoratorOpt)(
     <Select
       optionFilterProp={optionFilterProp}
       filterOption={filterOption}
-      getPopupContainer={() => document.querySelector(arrformQueryClass.join(''))}
+      getPopupContainer={() => document.querySelector(arrformQueryClass.join('')) || document.body }
       {...restProps}
     >
       {

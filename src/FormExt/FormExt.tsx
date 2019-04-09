@@ -1,12 +1,19 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { PureComponent, FormEvent } from 'react';
 import { Form, Row, Col, Button } from 'antd';
 
-import FSearch from './FSearch.jsx';
-import FSelect from './FSelect.jsx';
-import FInput from './FInput.jsx';
-import FTextArea from './FTextArea.jsx';
-import FDataPicker from './FDatePicker.jsx';
+import {
+  FormScopeState,
+  FormScopeProps,
+  FInputProps,
+  FTextAreaProps,
+  FSearchProps,
+  FDatePickerProps,
+  FRangePickerProps,
+} from './types';
+import FSelect from './FSelect';
+import FInput from './FInput';
+import FDatePicker from './FDatePicker';
+import { FormMapComponent, BaseCompType } from './types';
 
 const FormItem = Form.Item;
 
@@ -15,27 +22,27 @@ const formItemLayout = {
   wrapperCol: { span: 18 },
 };
 
-function formItemSwitch(args) {
-  const mapComponent = {
-    search: FSearch,
-    select: FSelect,
-    input: FInput,
-    textarea: FTextArea,
-    datePicker: FDataPicker,
-    rangePicker: FDataPicker,
+function formItemSwitch(args: BaseCompType) {
+  const mapComponent: FormMapComponent = {
+    input: () => FInput<FInputProps>(args),
+    search: () => FInput<FSearchProps>(args),
+    textarea: () => FInput<FTextAreaProps>(args),
+    select: () => FSelect(args),
+    datePicker: () => FDatePicker<FDatePickerProps>(args),
+    rangePicker: () => FDatePicker<FRangePickerProps>(args),
   };
 
-  const finFormItem = mapComponent[args.type];
-
-  if (!finFormItem) {
-    return null;
+  // formItemType在枚举中
+  if (Object.keys(mapComponent).indexOf(args.formItemType) > -1) {
+    // @ts-ignore
+    return mapComponent[args.formItemType]();
   }
-
-  return finFormItem({ ...args });
+  
+  return null;
 }
 
-class FormScope extends Component {
-  constructor(props) {
+class FormScope extends PureComponent<FormScopeProps, FormScopeState> {
+  constructor(props: Readonly<FormScopeProps>) {
     super(props);
 
     this.state = {
@@ -61,7 +68,7 @@ class FormScope extends Component {
     );
   }
 
-  onSearch(e) {
+  onSearch(e: FormEvent<Button>) {
     e.preventDefault();
     this.setState(
       {
@@ -78,11 +85,11 @@ class FormScope extends Component {
 
   render() {
     const {
-      gutter,
-      formItemList,
-      formClassName,
-      needBtnGroup,
-      btnSpan,
+      gutter = 10,
+      formItemList = [],
+      formClassName = 'antd-ext-form',
+      needBtnGroup = true,
+      btnSpan = 8,
       form,
     } = this.props;
 
@@ -118,7 +125,7 @@ class FormScope extends Component {
                     formItemSwitch({
                       formItemKey,
                       formClassName,
-                      form,
+                      rcform: form,
                       ...restProps,
                     })
                   }
@@ -145,32 +152,5 @@ class FormScope extends Component {
 }
 
 const FormScopeWrapper = Form.create()(FormScope);
-
-FormScopeWrapper.propTypes = {
-  formClassName: PropTypes.string,
-  gutter: PropTypes.number,
-  btnSpan: PropTypes.number,
-  needBtnGroup: PropTypes.bool,
-  formItemList: PropTypes.arrayOf(PropTypes.shape({
-    type: PropTypes.oneOf(['search', 'select', 'input', 'textarea', 'datePicker', 'rangePicker']),
-    label: PropTypes.string,
-    span: PropTypes.number,
-    noFormItemLayout: PropTypes.bool,
-    formItemKey: PropTypes.string.isRequired,
-    decoratorOpt: PropTypes.object,
-  })),
-  onSearch: PropTypes.func,
-  onReset: PropTypes.func,
-};
-
-FormScopeWrapper.defaultProps = {
-  formClassName: 'antd-ext-form',
-  gutter: 10,
-  btnSpan: 8,
-  needBtnGroup: true,
-  formItemList: [],
-  onSearch: () => { },
-  onReset: () => { },
-};
 
 export default FormScopeWrapper;

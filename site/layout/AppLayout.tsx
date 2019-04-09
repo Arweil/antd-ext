@@ -8,8 +8,12 @@ import './style.scss';
 const { Header, Content, Sider } = Layout;
 const { SubMenu } = Menu;
 
-export default class AppLayout extends PureComponent {
-  constructor(props) {
+interface IAppLayoutState {
+  collapsed: boolean;
+}
+
+export default class AppLayout extends PureComponent<{}, IAppLayoutState> {
+  constructor(props: Readonly<{}>) {
     super(props);
     this.state = {
       collapsed: false,

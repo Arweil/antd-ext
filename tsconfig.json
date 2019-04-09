@@ -28,7 +28,7 @@
       "es2017.object"
     ],
     "target": "es5", // "es2015" for ES6+ engines
-    "module": "commonjs", // "es2015" for tree-shaking
+    "module": "esNext", // "es2015" for tree-shaking
     "moduleResolution": "node",
     "noEmitOnError": false,
     "noFallthroughCasesInSwitch": true,
@@ -39,7 +39,8 @@
     "strict": true,
     "pretty": true,
     "removeComments": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "strictNullChecks": true
   },
   "include": [
     "src/**/*",

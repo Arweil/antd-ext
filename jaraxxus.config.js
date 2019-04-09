@@ -7,7 +7,7 @@ const dev = {
   poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
   proxyTable: {},
   useEslint: false,
-  showEslintErrorsInOverlay: false,
+  showEslintErrorsInOverlay: true,
   before: function(app) {},
   after: function(app) {},
 };

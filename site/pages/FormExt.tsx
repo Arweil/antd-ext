@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import FormExt from '@/FormExt';
 import { Card, Button, Breadcrumb } from 'antd';
 
@@ -14,10 +14,12 @@ const dataMap = {
   itemI: 'item I',
 };
 
-export default class Root extends Component {
-  constructor(props) {
+export default class PageFormExt extends PureComponent<{}, {}> {
+  formB: any;
+
+  constructor(props: Readonly<{}>) {
     super(props);
-    this.formB = React.createRef();
+    this.formB = null;
   }
 
   render() {
@@ -39,13 +41,13 @@ export default class Root extends Component {
             formItemList={[
               {
                 label: 'Label 1',
-                type: 'input',
+                formItemType: 'input',
                 noFormItemLayout: true,
                 formItemKey: 'keyA',
               },
               {
                 label: 'Label 2',
-                type: 'select',
+                formItemType: 'select',
                 dataMap: {
                   itemA: 'item A',
                   itemB: 'item B',
@@ -54,7 +56,7 @@ export default class Root extends Component {
               },
               {
                 label: 'Label 3',
-                type: 'datePicker',
+                formItemType: 'datePicker',
                 formItemKey: 'keyC',
                 format: 'YYYY-MM-DD HH:mm',
                 showTime: {
@@ -63,14 +65,14 @@ export default class Root extends Component {
               },
               {
                 label: 'Label 4',
-                type: 'rangePicker',
+                formItemType: 'rangePicker',
                 noFormItemLayout: true,
                 formItemKey: 'keyD',
               },
               {
                 span: 24,
                 label: 'Label 5',
-                type: 'textarea',
+                formItemType: 'textarea',
                 noFormItemLayout: true,
                 formItemKey: 'keyE',
                 autosize: {
@@ -118,12 +120,12 @@ export default class Root extends Component {
           }
         >
           <FormExt
-            wrappedComponentRef={(form) => this.formB = form}
+            wrappedComponentRef={(form: any) => this.formB = form}
             needBtnGroup={false}
             formItemList={[
               {
                 label: 'Label 1',
-                type: 'input',
+                formItemType: 'input',
                 noFormItemLayout: true,
                 formItemKey: 'keyA',
                 decoratorOpt: {
@@ -134,7 +136,7 @@ export default class Root extends Component {
               },
               {
                 label: 'Label 2',
-                type: 'select',
+                formItemType: 'select',
                 dataMap: {
                   itemA: 'item A',
                   itemB: 'item B',
@@ -148,7 +150,7 @@ export default class Root extends Component {
               },
               {
                 label: 'Label 3',
-                type: 'datePicker',
+                formItemType: 'datePicker',
                 formItemKey: 'keyC',
                 format: 'YYYY-MM-DD HH:mm',
                 showTime: {
@@ -162,7 +164,7 @@ export default class Root extends Component {
               },
               {
                 label: 'Label 4',
-                type: 'rangePicker',
+                formItemType: 'rangePicker',
                 noFormItemLayout: true,
                 formItemKey: 'keyD',
                 decoratorOpt: {
@@ -173,7 +175,7 @@ export default class Root extends Component {
               },
               {
                 label: 'Label 5',
-                type: 'select',
+                formItemType: 'select',
                 formItemKey: 'keyE',
                 decoratorOpt: {
                   rules: [{
@@ -188,7 +190,7 @@ export default class Root extends Component {
               {
                 span: 24,
                 label: 'Label 6',
-                type: 'textarea',
+                formItemType: 'textarea',
                 noFormItemLayout: true,
                 formItemKey: 'keyF',
                 autosize: {
