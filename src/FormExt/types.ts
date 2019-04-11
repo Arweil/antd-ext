@@ -20,6 +20,7 @@ interface FormValues {
 export interface FormScopeProps extends FormComponentProps {
   gutter?: number | object;
   formItemList: Array<FItemInputProps | FItemTextAreaProps | FItemSearchProps | FItemSelectProps | FItemDatePickerProps | FItemRangePickerProps>;
+  formItemLayout?: { labelCol: number, wrapperCol: number };
   formClassName?: string;
   needBtnGroup?: boolean;
   btnSpan?: number;
@@ -42,7 +43,6 @@ interface FormItemProps {
   span?: number;
   noFormItemLayout?: boolean;
   rcform?: WrappedFormUtils;
-  formClassName?: string;
   formItemType: string;
   formItemKey: string;
   decoratorOpt?: GetFieldDecoratorOptions;

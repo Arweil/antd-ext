@@ -17,7 +17,7 @@ import { FormMapComponent, BaseCompType } from './types';
 
 const FormItem = Form.Item;
 
-const formItemLayout = {
+const defaultFormItemLayout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 18 },
 };
@@ -87,6 +87,7 @@ class FormScope extends PureComponent<FormScopeProps, FormScopeState> {
     const {
       gutter = 10,
       formItemList = [],
+      formItemLayout = defaultFormItemLayout,
       formClassName = 'antd-ext-form',
       needBtnGroup = true,
       btnSpan = 8,
@@ -136,9 +137,13 @@ class FormScope extends PureComponent<FormScopeProps, FormScopeState> {
           {
             needBtnGroup ? (
               <Col span={btnSpan} className="antd-ext-form-btn-group-right antd-ext-form-flex-cnt-right">
+                {/*
+                  // @ts-ignore  */}
                 <Button loading={btnResetLoading} onClick={this.onReset}>
                   重置
                 </Button>
+                {/*
+                  // @ts-ignore  */}
                 <Button type="primary" loading={btnSearchLoading} htmlType="submit">
                   查询
                 </Button>
