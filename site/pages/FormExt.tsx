@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import FormExt from '@/FormExt';
+import FormExt, { FormScope } from '@/FormExt';
 import { Card, Button, Breadcrumb } from 'antd';
 
 const dataMap = {
@@ -15,7 +15,7 @@ const dataMap = {
 };
 
 export default class PageFormExt extends PureComponent<{}, {}> {
-  formB: any;
+  formB: FormScope | null;
 
   constructor(props: Readonly<{}>) {
     super(props);
@@ -99,7 +99,7 @@ export default class PageFormExt extends PureComponent<{}, {}> {
                 type="primary"
                 onClick={
                   () => {
-                    const vals = this.formB.props.form.getFieldsValue();
+                    const vals = this.formB && this.formB.props.form.getFieldsValue();
                     console.log(vals);
                   }
                 }
@@ -109,7 +109,7 @@ export default class PageFormExt extends PureComponent<{}, {}> {
               <Button
                 onClick={
                   () => {
-                    this.formB.props.form.resetFields();
+                    this.formB && this.formB.props.form.resetFields();
                     console.log('data cleard');
                   }
                 }

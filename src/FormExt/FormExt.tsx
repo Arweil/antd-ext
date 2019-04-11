@@ -151,6 +151,8 @@ class FormScope extends PureComponent<FormScopeProps, FormScopeState> {
   }
 }
 
+export { FormScope };
+
 const FormScopeWrapper = Form.create()(FormScope);
 
 export default FormScopeWrapper;
