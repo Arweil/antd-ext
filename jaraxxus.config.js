@@ -1,7 +1,7 @@
 const dev = {
   assetsPublicPath: '/',
   assetsSubDirectory: 'static',
-  port: 5000, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
+  port: 5001, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
   errorOverlay: true,
   hot: true,
   poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-

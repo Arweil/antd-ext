@@ -1,7 +1,8 @@
 import React from 'react';
 import { Select } from 'antd';
-import { FSelectProps } from './types';
 import { OptionProps } from 'antd/lib/select';
+import { FSelectProps } from './types';
+import { getLayoutElement } from './utils';
 
 const { Option } = Select;
 
@@ -25,15 +26,11 @@ export default function FSelect(props: FSelectProps) {
     ...restProps
   } = props;
 
-  const arrformQueryClass = formClassName.split(' ').map((item) => {
-    return `.${item}`;
-  });
-
   return rcform.getFieldDecorator(formItemKey, decoratorOpt)(
     <Select
       optionFilterProp={optionFilterProp}
       filterOption={filterOption}
-      getPopupContainer={() => document.querySelector(arrformQueryClass.join('')) || document.body }
+      getPopupContainer={() => getLayoutElement(formClassName)}
       {...restProps}
     >
       {

@@ -40,45 +40,65 @@ export default class PageFormExt extends PureComponent<{}, {}> {
             btnSpan={24}
             formItemList={[
               {
-                label: 'Label 1',
-                formItemType: 'input',
-                noFormItemLayout: true,
-                formItemKey: 'keyA',
-              },
-              {
-                label: 'Label 2',
-                formItemType: 'select',
-                dataMap: {
-                  itemA: 'item A',
-                  itemB: 'item B',
+                formItem: {
+                  label: 'Label 1',
+                  noFormItemLayout: true,
                 },
-                formItemKey: 'keyB',
+                component: {
+                  formItemType: 'input',
+                  formItemKey: 'keyA',
+                }
               },
               {
-                label: 'Label 3',
-                formItemType: 'datePicker',
-                formItemKey: 'keyC',
-                format: 'YYYY-MM-DD HH:mm',
-                showTime: {
-                  format: 'HH:mm',
+                formItem: {
+                  label: 'Label 2',
                 },
+                component: {
+                  formItemType: 'select',
+                  dataMap: {
+                    itemA: 'item A',
+                    itemB: 'item B',
+                  },
+                  formItemKey: 'keyB',
+                }
               },
               {
-                label: 'Label 4',
-                formItemType: 'rangePicker',
-                noFormItemLayout: true,
-                formItemKey: 'keyD',
-              },
-              {
-                span: 24,
-                label: 'Label 5',
-                formItemType: 'textarea',
-                noFormItemLayout: true,
-                formItemKey: 'keyE',
-                autosize: {
-                  minRows: 3,
-                  maxRows: 4,
+                formItem: {
+                  label: 'Label 3',
                 },
+                component: {
+                  formItemType: 'datePicker',
+                  formItemKey: 'keyC',
+                  format: 'YYYY-MM-DD HH:mm',
+                  showTime: {
+                    format: 'HH:mm',
+                  },
+                }
+              },
+              {
+                formItem: {
+                  label: 'Label 4',
+                  noFormItemLayout: true,
+                },
+                component: {
+                  formItemType: 'rangePicker',
+                  formItemKey: 'keyD',
+                }
+              },
+              {
+                formItem: {
+                  span: 24,
+                  label: 'Label 5',
+                  noFormItemLayout: true,
+                },
+                component: {
+                  formItemType: 'textarea',
+                  formItemKey: 'keyE',
+                  autosize: {
+                    minRows: 3,
+                    maxRows: 4,
+                  },
+                }
               },
             ]}
             onSearch={(val) => {
@@ -124,84 +144,108 @@ export default class PageFormExt extends PureComponent<{}, {}> {
             needBtnGroup={false}
             formItemList={[
               {
-                label: 'Label 1',
-                formItemType: 'input',
-                noFormItemLayout: true,
-                formItemKey: 'keyA',
-                decoratorOpt: {
-                  rules: [{
-                    required: true,
-                  }],
+                formItem: {
+                  label: 'Label 1',
+                  noFormItemLayout: true,
                 },
+                component: {
+                  formItemType: 'input',
+                  formItemKey: 'keyA',
+                  decoratorOpt: {
+                    rules: [{
+                      required: true,
+                    }],
+                  },
+                }
               },
               {
-                label: 'Label 2',
-                formItemType: 'select',
-                dataMap: {
-                  itemA: 'item A',
-                  itemB: 'item B',
+                formItem: {
+                  label: 'Label 2',
                 },
-                formItemKey: 'keyB',
-                decoratorOpt: {
-                  rules: [{
-                    required: true,
-                  }],
-                },
+                component: {
+                  formItemType: 'select',
+                  dataMap: {
+                    itemA: 'item A',
+                    itemB: 'item B',
+                  },
+                  formItemKey: 'keyB',
+                  decoratorOpt: {
+                    rules: [{
+                      required: true,
+                    }],
+                  },
+                }
               },
               {
-                label: 'Label 3',
-                formItemType: 'datePicker',
-                formItemKey: 'keyC',
-                format: 'YYYY-MM-DD HH:mm',
-                showTime: {
-                  format: 'HH:mm',
+                formItem: {
+                  label: 'Label 3',
                 },
-                decoratorOpt: {
-                  rules: [{
-                    required: true,
-                  }],
-                },
+                component: {
+                  formItemType: 'datePicker',
+                  formItemKey: 'keyC',
+                  format: 'YYYY-MM-DD HH:mm',
+                  showTime: {
+                    format: 'HH:mm',
+                  },
+                  decoratorOpt: {
+                    rules: [{
+                      required: true,
+                    }],
+                  },
+                }
               },
               {
-                label: 'Label 4',
-                formItemType: 'rangePicker',
-                noFormItemLayout: true,
-                formItemKey: 'keyD',
-                decoratorOpt: {
-                  rules: [{
-                    required: true,
-                  }],
+                formItem: {
+                  label: 'Label 4',
+                  noFormItemLayout: true,
                 },
+                component: {
+                  formItemType: 'rangePicker',
+                  formItemKey: 'keyD',
+                  decoratorOpt: {
+                    rules: [{
+                      required: true,
+                    }],
+                  },
+                }
               },
               {
-                label: 'Label 5',
-                formItemType: 'select',
-                formItemKey: 'keyE',
-                decoratorOpt: {
-                  rules: [{
-                    required: true,
-                  }],
+                formItem: {
+                  label: 'Label 5',
                 },
-                mode: 'multiple',
-                optionAll: false,
-                dataMap,
-                maxTagCount: 3,
+                component: {
+                  formItemType: 'select',
+                  formItemKey: 'keyE',
+                  decoratorOpt: {
+                    rules: [{
+                      required: true,
+                    }],
+                  },
+                  mode: 'multiple',
+                  optionAll: false,
+                  dataMap,
+                  maxTagCount: 3,
+                }
               },
               {
-                span: 24,
-                label: 'Label 6',
-                formItemType: 'textarea',
-                noFormItemLayout: true,
-                formItemKey: 'keyF',
-                autosize: {
-                  minRows: 3,
-                  maxRows: 4,
+                formItem: {
+                  span: 24,
+                  label: 'Label 6',
+                  noFormItemLayout: true,
                 },
-                decoratorOpt: {
-                  rules: [{
-                    required: true,
-                  }],
-                },
+                component: {
+                  formItemType: 'textarea',
+                  formItemKey: 'keyF',
+                  autosize: {
+                    minRows: 3,
+                    maxRows: 4,
+                  },
+                  decoratorOpt: {
+                    rules: [{
+                      required: true,
+                    }],
+                  },
+                }
               },
             ]}
           />

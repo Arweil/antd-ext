@@ -9,11 +9,11 @@ import {
   FSearchProps,
   FDatePickerProps,
   FRangePickerProps,
+  FSelectProps,
 } from './types';
 import FSelect from './FSelect';
 import FInput from './FInput';
 import FDatePicker from './FDatePicker';
-import { FormMapComponent, BaseCompType } from './types';
 
 const FormItem = Form.Item;
 
@@ -22,24 +22,23 @@ const defaultFormItemLayout = {
   wrapperCol: { span: 18 },
 };
 
-function formItemSwitch(args: BaseCompType) {
-  const mapComponent: FormMapComponent = {
-    input: () => FInput<FInputProps>(args),
-    search: () => FInput<FSearchProps>(args),
-    textarea: () => FInput<FTextAreaProps>(args),
-    select: () => FSelect(args),
-    datePicker: () => FDatePicker<FDatePickerProps>(args),
-    rangePicker: () => FDatePicker<FRangePickerProps>(args),
-  };
-
-  // formItemType在枚举中
-  if (Object.keys(mapComponent).indexOf(args.formItemType) > -1) {
-    // @ts-ignore
-    return mapComponent[args.formItemType]();
+function formItemSwitch(args: FInputProps | FSearchProps | FTextAreaProps | FSelectProps | FDatePickerProps | FRangePickerProps) {
+  switch (args.formItemType) {
+    case 'input':
+    case 'search':
+    case 'textarea':
+      return FInput(args);
+    case 'select':
+      return FSelect(args);
+    case 'datePicker':
+    case 'rangePicker':
+      return FDatePicker(args);
   }
-  
-  return null;
 }
+
+// function isExtra(component: InputExtensProps | TextAreaExtendsProps | SearchExtendsProps | SelectExtendsProps | DatePickerExtendsProps | RangePickerExtendsProps | ExtraExtendsProps): component is ExtraExtendsProps {
+//   return component.formItemType === 'extra';
+// }
 
 class FormScope extends PureComponent<FormScopeProps, FormScopeState> {
   constructor(props: Readonly<FormScopeProps>) {
@@ -87,47 +86,58 @@ class FormScope extends PureComponent<FormScopeProps, FormScopeState> {
     const {
       gutter = 10,
       formItemList = [],
-      formItemLayout = defaultFormItemLayout,
-      formClassName = 'antd-ext-form',
       needBtnGroup = true,
       btnSpan = 8,
       form,
     } = this.props;
 
+    let {
+      formClassName = '',
+    } = this.props;
+
     const { btnSearchLoading, btnResetLoading } = this.state;
+
+    formClassName += 'antd-ext-form';
 
     return (
       <Form className={formClassName} onSubmit={this.onSearch}>
         <Row gutter={gutter}>
-          {formItemList.map((formItem) => {
-            const { label, span = 8, noFormItemLayout, formItemKey, ...restProps } = formItem;
-
-            // 如果没有placeholder 那么直接使用label
-            restProps.placeholder = restProps.disabled ? '' : (restProps.placeholder || label);
-            // 初始化表单项规则
-            restProps.decoratorOpt = restProps.decoratorOpt || {};
+          {formItemList.map(({ formItem, component }) => {
+            const { span = 8, noFormItemLayout, ...resetProps } = formItem;
+            const { formItemKey, formItemType } = component;
 
             // FormItem 属性
-            const args = {
-              label,
-            };
             if (!noFormItemLayout) {
-              Object.assign(args, formItemLayout);
+              resetProps.labelCol = resetProps.labelCol || defaultFormItemLayout.labelCol;
+              resetProps.wrapperCol = resetProps.wrapperCol || defaultFormItemLayout.wrapperCol;
             } else {
-              Object.assign(args, {
-                className: 'antd-ext-form-item-flex',
-              });
+              resetProps.className += ' antd-ext-form-item-flex';
+            }
+
+            // if (isExtra(component)) {
+            //   return (
+            //     <Col key={formItemKey} span={span}>
+            //       <FormItem {...resetProps}>
+            //         {component.reactNode({ form, formClassName })}
+            //       </FormItem>
+            //     </Col>
+            //   )
+            // }
+
+            // datePicker 和 rangePicker 的 placeholder特殊处理
+            if (formItemType !== 'datePicker' && formItemType !== 'rangePicker') {
+              // 如果没有placeholder 那么直接使用label
+              component.placeholder = component.disabled ? '' : (component.placeholder || formItem.label);
             }
 
             return (
               <Col key={formItemKey} span={span}>
-                <FormItem {...args}>
+                <FormItem {...resetProps}>
                   {
                     formItemSwitch({
-                      formItemKey,
                       formClassName,
                       rcform: form,
-                      ...restProps,
+                      ...component,
                     })
                   }
                 </FormItem>
