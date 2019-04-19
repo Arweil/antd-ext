@@ -5,22 +5,39 @@ import { getLayoutElement } from './utils';
 
 const { RangePicker } = DatePicker;
 
-export default function FDatePicker(props: FDatePickerProps | FRangePickerProps) {
+function renderDatePicker(props: FDatePickerProps) {
   const { decoratorOpt, rcform, formItemKey, formClassName, formItemType, ...restProps } = props;
 
-  const mapComponent = {
-    datePicker: DatePicker,
-    rangePicker: RangePicker,
-  };
-
-  const FinFormItem = mapComponent[formItemType];
-
   return rcform.getFieldDecorator(formItemKey, decoratorOpt)(
-    // @ts-ignore
-    <FinFormItem
+    <DatePicker
       style={{ width: '100%' }}
       getCalendarContainer={() => getLayoutElement(formClassName)}
       {...restProps}
     />
   );
+}
+
+function renderRangePicker(props: FRangePickerProps) {
+  const { decoratorOpt, rcform, formItemKey, formClassName, formItemType, ...restProps } = props;
+
+  return rcform.getFieldDecorator(formItemKey, decoratorOpt)(
+    <RangePicker
+      style={{ width: '100%' }}
+      getCalendarContainer={() => getLayoutElement(formClassName)}
+      {...restProps}
+    />
+  );
+}
+
+export default function FDatePicker(props: FDatePickerProps | FRangePickerProps): React.ReactNode {
+  // 运行前
+  if (props.formItemType === 'datePicker') {
+    return renderDatePicker(props);
+  }
+
+  if (props.formItemType === 'rangePicker') {
+    return renderRangePicker(props);
+  }
+
+  return () => null;
 };

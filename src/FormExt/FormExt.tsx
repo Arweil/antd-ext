@@ -4,41 +4,9 @@ import { Form, Row, Col, Button } from 'antd';
 import {
   FormScopeState,
   FormScopeProps,
-  FInputProps,
-  FTextAreaProps,
-  FSearchProps,
-  FDatePickerProps,
-  FRangePickerProps,
-  FSelectProps,
 } from './types';
-import FSelect from './FSelect';
-import FInput from './FInput';
-import FDatePicker from './FDatePicker';
 
-const FormItem = Form.Item;
-
-const defaultFormItemLayout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 18 },
-};
-
-function formItemSwitch(args: FInputProps | FSearchProps | FTextAreaProps | FSelectProps | FDatePickerProps | FRangePickerProps) {
-  switch (args.formItemType) {
-    case 'input':
-    case 'search':
-    case 'textarea':
-      return FInput(args);
-    case 'select':
-      return FSelect(args);
-    case 'datePicker':
-    case 'rangePicker':
-      return FDatePicker(args);
-  }
-}
-
-// function isExtra(component: InputExtensProps | TextAreaExtendsProps | SearchExtendsProps | SelectExtendsProps | DatePickerExtendsProps | RangePickerExtendsProps | ExtraExtendsProps): component is ExtraExtendsProps {
-//   return component.formItemType === 'extra';
-// }
+import { createFormItem } from './FormItem';
 
 class FormScope extends PureComponent<FormScopeProps, FormScopeState> {
   constructor(props: Readonly<FormScopeProps>) {
@@ -83,66 +51,28 @@ class FormScope extends PureComponent<FormScopeProps, FormScopeState> {
   }
 
   render() {
-    const {
+    let {
       gutter = 10,
       formItemList = [],
       needBtnGroup = true,
       btnSpan = 8,
       form,
-    } = this.props;
-
-    let {
-      formClassName = '',
+      onSearch,
+      onReset,
+      onSubmit = this.onSearch,
+      className = '',
+      ...resetProps
     } = this.props;
 
     const { btnSearchLoading, btnResetLoading } = this.state;
 
-    formClassName += 'antd-ext-form';
+    className += ' antd-ext-form';
 
     return (
-      <Form className={formClassName} onSubmit={this.onSearch}>
+      <Form className={className} onSubmit={onSubmit} {...resetProps}>
         <Row gutter={gutter}>
-          {formItemList.map(({ formItem, component }) => {
-            const { span = 8, noFormItemLayout, ...resetProps } = formItem;
-            const { formItemKey, formItemType } = component;
-
-            // FormItem 属性
-            if (!noFormItemLayout) {
-              resetProps.labelCol = resetProps.labelCol || defaultFormItemLayout.labelCol;
-              resetProps.wrapperCol = resetProps.wrapperCol || defaultFormItemLayout.wrapperCol;
-            } else {
-              resetProps.className += ' antd-ext-form-item-flex';
-            }
-
-            // if (isExtra(component)) {
-            //   return (
-            //     <Col key={formItemKey} span={span}>
-            //       <FormItem {...resetProps}>
-            //         {component.reactNode({ form, formClassName })}
-            //       </FormItem>
-            //     </Col>
-            //   )
-            // }
-
-            // datePicker 和 rangePicker 的 placeholder特殊处理
-            if (formItemType !== 'datePicker' && formItemType !== 'rangePicker') {
-              // 如果没有placeholder 那么直接使用label
-              component.placeholder = component.disabled ? '' : (component.placeholder || formItem.label);
-            }
-
-            return (
-              <Col key={formItemKey} span={span}>
-                <FormItem {...resetProps}>
-                  {
-                    formItemSwitch({
-                      formClassName,
-                      rcform: form,
-                      ...component,
-                    })
-                  }
-                </FormItem>
-              </Col>
-            );
+          {formItemList.map((formItemProps) => {
+            return createFormItem(formItemProps, form, className);
           })}
           {
             needBtnGroup ? (

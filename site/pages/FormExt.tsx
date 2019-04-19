@@ -14,12 +14,25 @@ const dataMap = {
   itemI: 'item I',
 };
 
+const formItemLayout = {
+  labelCol: { span: 8 },
+  wrapperCol: { span: 16 },
+};
+
 export default class PageFormExt extends PureComponent<{}, {}> {
   formB: FormScope | null;
 
   constructor(props: Readonly<{}>) {
     super(props);
     this.formB = null;
+  }
+
+  normFile = (e: any) => {
+    console.log('Upload event:', e);
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e && e.fileList;
   }
 
   render() {
@@ -147,6 +160,7 @@ export default class PageFormExt extends PureComponent<{}, {}> {
                 formItem: {
                   label: 'Label 1',
                   noFormItemLayout: true,
+                  ...formItemLayout,
                 },
                 component: {
                   formItemType: 'input',
@@ -161,6 +175,7 @@ export default class PageFormExt extends PureComponent<{}, {}> {
               {
                 formItem: {
                   label: 'Label 2',
+                  ...formItemLayout,
                 },
                 component: {
                   formItemType: 'select',
@@ -179,6 +194,7 @@ export default class PageFormExt extends PureComponent<{}, {}> {
               {
                 formItem: {
                   label: 'Label 3',
+                  ...formItemLayout,
                 },
                 component: {
                   formItemType: 'datePicker',
@@ -198,6 +214,7 @@ export default class PageFormExt extends PureComponent<{}, {}> {
                 formItem: {
                   label: 'Label 4',
                   noFormItemLayout: true,
+                  ...formItemLayout,
                 },
                 component: {
                   formItemType: 'rangePicker',
@@ -212,6 +229,7 @@ export default class PageFormExt extends PureComponent<{}, {}> {
               {
                 formItem: {
                   label: 'Label 5',
+                  ...formItemLayout,
                 },
                 component: {
                   formItemType: 'select',
@@ -229,13 +247,41 @@ export default class PageFormExt extends PureComponent<{}, {}> {
               },
               {
                 formItem: {
-                  span: 24,
                   label: 'Label 6',
+                  ...formItemLayout,
+                },
+                component: {
+                  formItemType: 'select',
+                  dataList: [
+                    {
+                      code: 'itemA',
+                      name: 'Item A',
+                    },
+                    {
+                      code: 'itemB',
+                      name: 'Item B',
+                      disabled: true,
+                    },
+                  ],
+                  showSearch: true,
+                  formItemKey: 'keyF',
+                  decoratorOpt: {
+                    rules: [{
+                      required: true,
+                    }],
+                  },
+                }
+              },
+              {
+                formItem: {
+                  span: 24,
+                  label: 'Label 7',
                   noFormItemLayout: true,
+                  ...formItemLayout,
                 },
                 component: {
                   formItemType: 'textarea',
-                  formItemKey: 'keyF',
+                  formItemKey: 'keyG',
                   autosize: {
                     minRows: 3,
                     maxRows: 4,

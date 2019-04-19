@@ -19,7 +19,8 @@ export default function FSelect(props: FSelectProps) {
     rcform,
     formItemKey,
     formClassName,
-    dataMap = {}, // 数据绑定 数据源
+    dataMap = {}, // 数据源 对象
+    dataList = [], // 数据源 数组
     optionAll = true, // 是否有 "全部"
     optionFilterProp = 'children',
     filterOption = onFilterOption,
@@ -43,6 +44,16 @@ export default function FSelect(props: FSelectProps) {
           </Option>
         );
       })}
+      {
+        dataList.map((item) => {
+          const { code, name, ...restOptionProps } = item;
+          return (
+            <Option key={code} {...restOptionProps}>
+              {name}
+            </Option>
+          );
+        })
+      }
     </Select>
   );
 };

@@ -1,7 +1,7 @@
 import { InputProps, TextAreaProps, SearchProps } from 'antd/lib/input';
 import { SelectProps } from 'antd/lib/select';
 import { DatePickerProps, RangePickerProps } from 'antd/lib/date-picker/interface';
-import { FormComponentProps, WrappedFormUtils, GetFieldDecoratorOptions } from 'antd/lib/form/Form';
+import { WrappedFormUtils, GetFieldDecoratorOptions, FormProps } from 'antd/lib/form/Form';
 import { FormItemProps as AntdFormItemProps } from 'antd/lib/form/FormItem';
 import { DatePicker } from 'antd';
 import React from 'react';
@@ -16,12 +16,13 @@ interface FormValues {
 }
 
 // FormExt props
-export interface FormScopeProps extends FormComponentProps {
+export interface FormScopeProps extends FormProps {
   gutter?: number | object;
-  formItemList: Array<FItemInputProps | FItemTextAreaProps | FItemSearchProps | FItemSelectProps | FItemDatePickerProps | FItemRangePickerProps>;
-  formClassName?: string;
+  formItemList: Array<FItemInputProps | FItemTextAreaProps | FItemSearchProps | FItemSelectProps | FItemDatePickerProps | FItemRangePickerProps | FItemExtraProps>;
+  className?: string;
   needBtnGroup?: boolean;
   btnSpan?: number;
+  form: WrappedFormUtils,
   onSearch?: (values: FormValues) => void;
   onReset?: () => void;
 }
@@ -49,15 +50,15 @@ interface BaseFormItemProps {
 }
 
 // Input
-interface InputExtensProps extends CompExtendsProps, InputProps {
+interface InputExtendsProps extends CompExtendsProps, InputProps {
   formItemType: 'input';
 }
 
-export interface FInputProps extends InputExtensProps, CompDecoratorExtendsProps {
+export interface FInputProps extends InputExtendsProps, CompDecoratorExtendsProps {
 }
 
 export interface FItemInputProps extends BaseFormItemProps {
-  component: InputExtensProps;
+  component: InputExtendsProps;
 }
 
 // TextArea
@@ -90,6 +91,13 @@ interface FSelectPropsExt {
     [key: string]: string;
     [key: number]: string;
   };
+  dataList?: {
+    code: string | number;
+    name: string;
+    disabled?: boolean;
+    title?: string;
+    className?: string;
+  }[];
   optionAll?: boolean;
 }
 
@@ -137,19 +145,10 @@ export interface FItemRangePickerProps extends BaseFormItemProps {
 export interface ExtraExtendsProps {
   formItemType: 'extra',
   formItemKey: string,
-  reactNode: ({ form, formClassName }: { form: WrappedFormUtils, formClassName: string }) => React.ReactNode;
+  reactNode: ({ form, formItemKey, formClassName }: { form: WrappedFormUtils, formItemKey: string, formClassName: string }) => React.ReactNode;
 };
 
 // Extra component 自定义组件
 export interface FItemExtraProps extends BaseFormItemProps {
   component: ExtraExtendsProps;
-}
-
-export interface FormMapComponent {
-  input: React.ReactNode;
-  search: React.ReactNode;
-  textarea: React.ReactNode;
-  select: React.ReactNode;
-  datePicker: React.ReactNode;
-  rangePicker: React.ReactNode;
 }

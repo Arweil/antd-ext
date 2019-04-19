@@ -5,18 +5,6 @@ import { FInputProps, FSearchProps, FTextAreaProps } from './types';
 const { Search } = Input;
 const { TextArea } = Input;
 
-function isFInputProps(params: FInputProps | FSearchProps | FTextAreaProps): params is FInputProps {
-  return params.formItemType === 'input';
-}
-
-function isFSearchProps(params: FInputProps | FSearchProps | FTextAreaProps): params is FSearchProps {
-  return params.formItemType === 'search';
-}
-
-function isFTextAreaProps(params: FInputProps | FSearchProps | FTextAreaProps): params is FTextAreaProps {
-  return params.formItemType === 'textarea';
-}
-
 function renderInput(props: FInputProps) {
   const { decoratorOpt, rcform, formItemKey, formClassName, formItemType, ...restProps } = props;
   restProps.autoComplete = 'off';
@@ -40,15 +28,16 @@ function renderTextArea(props: FTextAreaProps) {
 }
 
 export default function FInput(props: FInputProps | FSearchProps | FTextAreaProps): React.ReactNode {
-  if (isFInputProps(props)) {
+  // 运行前
+  if (props.formItemType === 'input') {
     return renderInput(props);
   }
 
-  if (isFSearchProps(props)) {
+  if (props.formItemType === 'search') {
     return renderSearch(props);
   }
 
-  if (isFTextAreaProps(props)) {
+  if (props.formItemType === 'textarea') {
     return renderTextArea(props);
   }
 
