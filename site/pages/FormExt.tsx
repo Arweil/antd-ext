@@ -27,14 +27,6 @@ export default class PageFormExt extends PureComponent<{}, {}> {
     this.formB = null;
   }
 
-  normFile = (e: any) => {
-    console.log('Upload event:', e);
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e && e.fileList;
-  }
-
   render() {
     return (
       <div>
