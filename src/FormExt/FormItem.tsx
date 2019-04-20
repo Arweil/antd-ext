@@ -34,7 +34,7 @@ function formItemSwitch(args:
   FDatePickerProps | FRangePickerProps |
   FSelectProps
 ) {
-  switch (args.formItemType) {
+  switch (args.type) {
     case 'input':
     case 'search':
     case 'textarea':
@@ -60,7 +60,7 @@ function renderNormalComp(
     noFormItemLayout,
     ...resetProps
   } = formItem;
-  const { formItemKey, formItemType } = component;
+  const { key, type } = component;
 
   // FormItem 属性
   if (!noFormItemLayout) {
@@ -73,13 +73,13 @@ function renderNormalComp(
   }
 
   // datePicker 和 rangePicker 的 placeholder特殊处理
-  if (formItemType !== 'datePicker' && formItemType !== 'rangePicker') {
+  if (type !== 'datePicker' && type !== 'rangePicker') {
     // 如果没有placeholder 那么直接使用label
     component.placeholder = component.disabled ? '' : (component.placeholder || formItem.label);
   }
 
   return (
-    <Col key={formItemKey} span={span}>
+    <Col key={key} span={span}>
       <FormItem {...resetProps}>
         {
           formItemSwitch({
@@ -99,7 +99,7 @@ function renderExtraComp(
   formClassName: string
 ) {
   const { span = 8, noFormItemLayout, ...resetProps } = formItem;
-  const { formItemKey } = component;
+  const { key } = component;
 
   // FormItem 属性
   if (!noFormItemLayout) {
@@ -112,10 +112,10 @@ function renderExtraComp(
   }
 
   return (
-    <Col key={formItemKey} span={span}>
+    <Col key={key} span={span}>
       <FormItem {...resetProps}>
         {
-          component.reactNode({ form, formItemKey, formClassName })
+          component.render({ form, key, formClassName })
         }
       </FormItem>
     </Col>
@@ -131,31 +131,31 @@ function createFormItem(
   form: WrappedFormUtils,
   formClassName: string
 ): React.ReactNode {
-  if (component.formItemType === 'input') {
+  if (component.type === 'input') {
     return renderNormalComp({ formItem, component }, form, formClassName);
   }
 
-  if (component.formItemType === 'search') {
+  if (component.type === 'search') {
     return renderNormalComp({ formItem, component }, form, formClassName);
   }
 
-  if (component.formItemType === 'textarea') {
+  if (component.type === 'textarea') {
     return renderNormalComp({ formItem, component }, form, formClassName);
   }
 
-  if (component.formItemType === 'select') {
+  if (component.type === 'select') {
     return renderNormalComp({ formItem, component }, form, formClassName);
   }
   
-  if (component.formItemType === 'datePicker') {
+  if (component.type === 'datePicker') {
     return renderNormalComp({ formItem, component }, form, formClassName);
   }
 
-  if (component.formItemType === 'rangePicker') {
+  if (component.type === 'rangePicker') {
     return renderNormalComp({ formItem, component }, form, formClassName);
   }
 
-  if (component.formItemType === 'extra') {
+  if (component.type === 'extra') {
     return renderExtraComp({ formItem, component }, form, formClassName);
   }
 

@@ -6,9 +6,9 @@ import { getLayoutElement } from './utils';
 const { RangePicker } = DatePicker;
 
 function renderDatePicker(props: FDatePickerProps) {
-  const { decoratorOpt, rcform, formItemKey, formClassName, formItemType, ...restProps } = props;
+  const { decoratorOpt, rcform, key, formClassName, type, ...restProps } = props;
 
-  return rcform.getFieldDecorator(formItemKey, decoratorOpt)(
+  return rcform.getFieldDecorator(key, decoratorOpt)(
     <DatePicker
       style={{ width: '100%' }}
       getCalendarContainer={() => getLayoutElement(formClassName)}
@@ -18,9 +18,9 @@ function renderDatePicker(props: FDatePickerProps) {
 }
 
 function renderRangePicker(props: FRangePickerProps) {
-  const { decoratorOpt, rcform, formItemKey, formClassName, formItemType, ...restProps } = props;
+  const { decoratorOpt, rcform, key, formClassName, type, ...restProps } = props;
 
-  return rcform.getFieldDecorator(formItemKey, decoratorOpt)(
+  return rcform.getFieldDecorator(key, decoratorOpt)(
     <RangePicker
       style={{ width: '100%' }}
       getCalendarContainer={() => getLayoutElement(formClassName)}
@@ -31,11 +31,11 @@ function renderRangePicker(props: FRangePickerProps) {
 
 export default function FDatePicker(props: FDatePickerProps | FRangePickerProps): React.ReactNode {
   // 运行前
-  if (props.formItemType === 'datePicker') {
+  if (props.type === 'datePicker') {
     return renderDatePicker(props);
   }
 
-  if (props.formItemType === 'rangePicker') {
+  if (props.type === 'rangePicker') {
     return renderRangePicker(props);
   }
 

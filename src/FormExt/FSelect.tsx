@@ -17,7 +17,7 @@ export default function FSelect(props: FSelectProps) {
   const {
     decoratorOpt,
     rcform,
-    formItemKey,
+    key,
     formClassName,
     dataMap = {}, // 数据源 对象
     dataList = [], // 数据源 数组
@@ -27,7 +27,7 @@ export default function FSelect(props: FSelectProps) {
     ...restProps
   } = props;
 
-  return rcform.getFieldDecorator(formItemKey, decoratorOpt)(
+  return rcform.getFieldDecorator(key, decoratorOpt)(
     <Select
       optionFilterProp={optionFilterProp}
       filterOption={filterOption}

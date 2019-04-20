@@ -34,8 +34,8 @@ interface FormItemProps extends AntdFormItemProps {
 }
 
 interface CompExtendsProps {
-  formItemType: string;
-  formItemKey: string;
+  type: string;
+  key: string;
   decoratorOpt?: GetFieldDecoratorOptions;
 }
 
@@ -51,7 +51,7 @@ interface BaseFormItemProps {
 
 // Input
 interface InputExtendsProps extends CompExtendsProps, InputProps {
-  formItemType: 'input';
+  type: 'input';
 }
 
 export interface FInputProps extends InputExtendsProps, CompDecoratorExtendsProps {
@@ -63,7 +63,7 @@ export interface FItemInputProps extends BaseFormItemProps {
 
 // TextArea
 interface TextAreaExtendsProps extends CompExtendsProps, TextAreaProps {
-  formItemType: 'textarea'
+  type: 'textarea'
 }
 
 export interface FTextAreaProps extends TextAreaExtendsProps, CompDecoratorExtendsProps {
@@ -75,7 +75,7 @@ export interface FItemTextAreaProps extends BaseFormItemProps {
 
 // Search
 interface SearchExtendsProps extends CompExtendsProps, SearchProps {
-  formItemType: 'search'
+  type: 'search'
 }
 
 export interface FSearchProps extends SearchExtendsProps, CompDecoratorExtendsProps {
@@ -102,7 +102,7 @@ interface FSelectPropsExt {
 }
 
 interface SelectExtendsProps extends CompExtendsProps, FSelectPropsExt, SelectProps {
-  formItemType: 'select';
+  type: 'select';
 }
 
 export interface FSelectProps extends SelectExtendsProps, CompDecoratorExtendsProps {
@@ -120,7 +120,7 @@ export interface FDatePickerMapComponent {
 
 // DatePicker
 interface DatePickerExtendsProps extends CompExtendsProps, DatePickerProps {
-  formItemType: 'datePicker';
+  type: 'datePicker';
 }
 
 export interface FDatePickerProps extends DatePickerExtendsProps, CompDecoratorExtendsProps {
@@ -132,7 +132,7 @@ export interface FItemDatePickerProps extends BaseFormItemProps {
 
 // RangePicker
 interface RangePickerExtendsProps extends CompExtendsProps, RangePickerProps {
-  formItemType: 'rangePicker';
+  type: 'rangePicker';
 }
 
 export interface FRangePickerProps extends RangePickerExtendsProps, CompDecoratorExtendsProps {
@@ -143,9 +143,9 @@ export interface FItemRangePickerProps extends BaseFormItemProps {
 }
 
 export interface ExtraExtendsProps {
-  formItemType: 'extra',
-  formItemKey: string,
-  reactNode: ({ form, formItemKey, formClassName }: { form: WrappedFormUtils, formItemKey: string, formClassName: string }) => React.ReactNode;
+  type: 'extra',
+  key: string,
+  render: ({ form, key, formClassName }: { form: WrappedFormUtils, key: string, formClassName: string }) => React.ReactNode;
 };
 
 // Extra component 自定义组件

@@ -50,8 +50,8 @@ export default class PageFormExt extends PureComponent<{}, {}> {
                   noFormItemLayout: true,
                 },
                 component: {
-                  formItemType: 'input',
-                  formItemKey: 'keyA',
+                  type: 'input',
+                  key: 'keyA',
                 }
               },
               {
@@ -59,12 +59,12 @@ export default class PageFormExt extends PureComponent<{}, {}> {
                   label: 'Label 2',
                 },
                 component: {
-                  formItemType: 'select',
+                  type: 'select',
                   dataMap: {
                     itemA: 'item A',
                     itemB: 'item B',
                   },
-                  formItemKey: 'keyB',
+                  key: 'keyB',
                 }
               },
               {
@@ -72,8 +72,8 @@ export default class PageFormExt extends PureComponent<{}, {}> {
                   label: 'Label 3',
                 },
                 component: {
-                  formItemType: 'datePicker',
-                  formItemKey: 'keyC',
+                  type: 'datePicker',
+                  key: 'keyC',
                   format: 'YYYY-MM-DD HH:mm',
                   showTime: {
                     format: 'HH:mm',
@@ -86,8 +86,8 @@ export default class PageFormExt extends PureComponent<{}, {}> {
                   noFormItemLayout: true,
                 },
                 component: {
-                  formItemType: 'rangePicker',
-                  formItemKey: 'keyD',
+                  type: 'rangePicker',
+                  key: 'keyD',
                 }
               },
               {
@@ -97,8 +97,8 @@ export default class PageFormExt extends PureComponent<{}, {}> {
                   noFormItemLayout: true,
                 },
                 component: {
-                  formItemType: 'textarea',
-                  formItemKey: 'keyE',
+                  type: 'textarea',
+                  key: 'keyE',
                   autosize: {
                     minRows: 3,
                     maxRows: 4,
@@ -155,8 +155,8 @@ export default class PageFormExt extends PureComponent<{}, {}> {
                   ...formItemLayout,
                 },
                 component: {
-                  formItemType: 'input',
-                  formItemKey: 'keyA',
+                  type: 'input',
+                  key: 'keyA',
                   decoratorOpt: {
                     rules: [{
                       required: true,
@@ -170,12 +170,12 @@ export default class PageFormExt extends PureComponent<{}, {}> {
                   ...formItemLayout,
                 },
                 component: {
-                  formItemType: 'select',
+                  type: 'select',
                   dataMap: {
                     itemA: 'item A',
                     itemB: 'item B',
                   },
-                  formItemKey: 'keyB',
+                  key: 'keyB',
                   decoratorOpt: {
                     rules: [{
                       required: true,
@@ -189,8 +189,8 @@ export default class PageFormExt extends PureComponent<{}, {}> {
                   ...formItemLayout,
                 },
                 component: {
-                  formItemType: 'datePicker',
-                  formItemKey: 'keyC',
+                  type: 'datePicker',
+                  key: 'keyC',
                   format: 'YYYY-MM-DD HH:mm',
                   showTime: {
                     format: 'HH:mm',
@@ -209,8 +209,8 @@ export default class PageFormExt extends PureComponent<{}, {}> {
                   ...formItemLayout,
                 },
                 component: {
-                  formItemType: 'rangePicker',
-                  formItemKey: 'keyD',
+                  type: 'rangePicker',
+                  key: 'keyD',
                   decoratorOpt: {
                     rules: [{
                       required: true,
@@ -224,8 +224,8 @@ export default class PageFormExt extends PureComponent<{}, {}> {
                   ...formItemLayout,
                 },
                 component: {
-                  formItemType: 'select',
-                  formItemKey: 'keyE',
+                  type: 'select',
+                  key: 'keyE',
                   decoratorOpt: {
                     rules: [{
                       required: true,
@@ -243,7 +243,7 @@ export default class PageFormExt extends PureComponent<{}, {}> {
                   ...formItemLayout,
                 },
                 component: {
-                  formItemType: 'select',
+                  type: 'select',
                   dataList: [
                     {
                       code: 'itemA',
@@ -256,7 +256,7 @@ export default class PageFormExt extends PureComponent<{}, {}> {
                     },
                   ],
                   showSearch: true,
-                  formItemKey: 'keyF',
+                  key: 'keyF',
                   decoratorOpt: {
                     rules: [{
                       required: true,
@@ -272,8 +272,8 @@ export default class PageFormExt extends PureComponent<{}, {}> {
                   ...formItemLayout,
                 },
                 component: {
-                  formItemType: 'textarea',
-                  formItemKey: 'keyG',
+                  type: 'textarea',
+                  key: 'keyG',
                   autosize: {
                     minRows: 3,
                     maxRows: 4,
