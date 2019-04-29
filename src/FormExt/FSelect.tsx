@@ -48,6 +48,7 @@ export default function FSelect(props: FSelectProps) {
         dataList.map((item) => {
           const { code, name, ...restOptionProps } = item;
           return (
+            // @ts-ignore
             <Option key={code} {...restOptionProps}>
               {name}
             </Option>
