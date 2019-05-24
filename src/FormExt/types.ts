@@ -5,6 +5,7 @@ import { WrappedFormUtils, GetFieldDecoratorOptions, FormProps } from 'antd/lib/
 import { FormItemProps as AntdFormItemProps } from 'antd/lib/form/FormItem';
 import { DatePicker } from 'antd';
 import React from 'react';
+import { ColProps } from 'antd/lib/col';
 
 export interface FormScopeState {
   btnSearchLoading: boolean;
@@ -28,8 +29,7 @@ export interface FormScopeProps extends FormProps {
 }
 
 // 表单项类型
-interface FormItemProps extends AntdFormItemProps {
-  span?: number;
+interface FormItemProps extends AntdFormItemProps, ColProps {
   noFormItemLayout?: boolean;
 }
 

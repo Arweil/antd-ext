@@ -64,3 +64,4 @@ export async function resetForm(formInstanceList: FormScope[]) {
 export default FormExt;
 
 export { FormScope };
+export * from './format';

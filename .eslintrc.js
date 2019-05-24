@@ -86,25 +86,14 @@ const baseEslintConfig = {
     1
   ],
 }
-
 // https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/eslint-plugin/docs/rules
 const typescriptElintConf = {
-  "indent": "off",
-  "@typescript-eslint/indent": [
-    "error",
-    2,
-    {
-      "VariableDeclarator": 1
-    }
-  ],
 }
-
 // 提示您的代码的浏览器兼容性
 // https://github.com/amilajack/eslint-plugin-compat
 const compatEslintConfig = {
   "compat/compat": "error"
 }
-
 // 导入导出语法linting
 // https://github.com/benmosher/eslint-plugin-import
 const importEslintConfig = {
@@ -121,7 +110,6 @@ const importEslintConfig = {
     0
   ]
 }
-
 // https://github.com/evcohen/eslint-plugin-jsx-a11y
 const jsxa11yEslintConfig = {
   "jsx-a11y/no-static-element-interactions": [
@@ -137,7 +125,6 @@ const jsxa11yEslintConfig = {
     0
   ],
 }
-
 // https://github.com/yannickcr/eslint-plugin-react
 const reactEslintConfig = {
   // "react/jsx-no-bind": [
@@ -175,8 +162,11 @@ const reactEslintConfig = {
 }
 
 module.exports = {
-  "parser": "@typescript-eslint/parser",
-  "extends": ["airbnb", "plugin:@typescript-eslint/recommended"],
+  "extends": [
+    "airbnb",
+    "airbnb-typescript",
+    "plugin:@typescript-eslint/recommended"
+  ],
   "plugins": [
     "@typescript-eslint",
     "compat",

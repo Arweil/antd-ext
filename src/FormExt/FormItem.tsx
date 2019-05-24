@@ -56,6 +56,7 @@ function renderNormalComp(
   formClassName: string
 ) {
   const {
+    offset,
     span = 8,
     noFormItemLayout,
     ...resetProps
@@ -79,7 +80,7 @@ function renderNormalComp(
   }
 
   return (
-    <Col key={key} span={span}>
+    <Col key={key} span={span} offset={offset}>
       <FormItem {...resetProps}>
         {
           formItemSwitch({
@@ -98,7 +99,7 @@ function renderExtraComp(
   form: WrappedFormUtils,
   formClassName: string
 ) {
-  const { span = 8, noFormItemLayout, ...resetProps } = formItem;
+  const { offset, span = 8, noFormItemLayout, ...resetProps } = formItem;
   const { key } = component;
 
   // FormItem 属性
@@ -112,7 +113,7 @@ function renderExtraComp(
   }
 
   return (
-    <Col key={key} span={span}>
+    <Col key={key} span={span} offset={offset}>
       <FormItem {...resetProps}>
         {
           component.render({ form, key, formClassName })
