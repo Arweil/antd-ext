@@ -3,7 +3,7 @@ import { Modal, Button, Form, Row, Col, Input, Icon, Dropdown, Menu } from 'antd
 import { ModalProps } from 'antd/lib/modal';
 import _ from 'lodash';
 import mapComponent from './MapComponent';
-import { getLastPromise } from './promiseExt';
+import { getLastPromise } from '@/utils/promiseExt';
 import { BatchEditModalProps, BatchEditModalState, FieldConf } from './types';
 
 const FormItem = Form.Item;
