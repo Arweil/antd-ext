@@ -1,7 +1,7 @@
 import { WrappedFormUtils } from "antd/lib/form/Form";
 import { ModalProps } from 'antd/lib/modal';
 
-interface FieldConf {
+export interface FieldConf {
   field: string;
   compType: string;
   enumName: string;
@@ -11,14 +11,20 @@ interface FieldConf {
 
 export interface BatchEditModalProps extends ModalProps {
   form: WrappedFormUtils;
-  fieldConfList: FieldConf[],
-  modalProps: ModalProps,
-  onSave: (params: { [key: string]: string | undefined }) => Promise<void>,
-  onClose: () => Promise<void>,
+  fieldConfList: FieldConf[];
+  modalProps: ModalProps;
+  onSave: (params: { [key: string]: string | undefined }) => Promise<void>;
+  onClose: () => Promise<void>;
+  onAddField: (params: FieldConf) => Promise<EnumType>;
+  onSearch?: (params: { field: string, value: string }) => Promise<EnumType>;
+  onValidate?: (element: FieldConf, value: any, callback: any) => void;
 }
 
 export interface BatchEditModalState {
-  fetching: boolean;
+  saving: boolean;
+  searching: boolean;
+  addingField: boolean;
+  enumItems: { [key: string]: EnumType };
 }
 
 export interface EnumType {

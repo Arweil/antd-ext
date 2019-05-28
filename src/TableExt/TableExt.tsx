@@ -1,5 +1,6 @@
 import React from 'react';
-import Table, { ColumnProps, TableProps } from 'antd/lib/table';
+import { Table } from 'antd';
+import { ColumnProps, TableProps } from 'antd/lib/table';
 
 export interface ColumnPropsExtend<D, R> extends ColumnProps<D> {
   footerIndex?: string;

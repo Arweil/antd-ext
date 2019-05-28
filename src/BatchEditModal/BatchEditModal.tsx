@@ -1,83 +1,108 @@
 import React, { PureComponent } from 'react';
-import { Modal, Button, Form, Row, Col, Input, Icon, Dropdown, Menu, Select } from 'antd';
-import { BatchEditModalProps, BatchEditModalState, EnumType } from './types';
-import { OptionProps } from 'antd/lib/select';
+import { Modal, Button, Form, Row, Col, Input, Icon, Dropdown, Menu } from 'antd';
+import { ModalProps } from 'antd/lib/modal';
+import _ from 'lodash';
+import mapComponent from './MapComponent';
+import { getLastPromise } from './promiseExt';
+import { BatchEditModalProps, BatchEditModalState, FieldConf } from './types';
 
 const FormItem = Form.Item;
-const SelectOption = Select.Option;
 const formkeys = 'fieldList';
 
-function getOptions(enumOption: EnumType) {
-  return Object.keys(enumOption).map((item) => {
-    return <SelectOption key={item}>{enumOption[item]}</SelectOption>;
-  });
-}
-
-const onFilterOption = (input: string, option: React.ReactElement<OptionProps>) => {
-  if (typeof option.props.children === 'string') {
-    return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-  }
-  return option;
-};
-
-// 字段类型
-const dicFieldType = Object.seal({
-  dropDownList: 'dropDownList', // 下拉列表
-  dropDownListSearch: 'dropDownListSearch', // 下拉异步搜索框
-  dropDownListMultiple: 'dropDownListMultiple', // 下拉多选
-  cascader: 'cascader', // 级联选择
-  entryField: 'entryField', // 输入框
-  readOnlyEmpty: 'readOnlyEmpty', // 只读为空
-  datePicker: 'datePicker', // 日期选择
-});
+const _getLastPromise = getLastPromise();
 
 class BatchEditModal extends PureComponent<BatchEditModalProps, BatchEditModalState> {
-  private curEnum: { [key: string]: EnumType }
   constructor(props: Readonly<BatchEditModalProps>) {
     super(props);
 
     this.state = {
-      fetching: false,
+      saving: false,
+      addingField: false,
+      searching: false,
+      enumItems: {},
     };
-
-    this.curEnum = {};
 
     this.onAdd = this.onAdd.bind(this);
     this.onDelete = this.onDelete.bind(this);
     this.onSave = this.onSave.bind(this);
     this.onClose = this.onClose.bind(this);
-    this.getFieldConfValue = this.getFieldConfValue.bind(this);
+    this.onSearch = this.onSearch.bind(this);
+    this.onValidate = this.onValidate.bind(this);
   }
 
   // 添加字段
   async onAdd({ key }: { key: string }) {
-    const { fieldConfList, form } = this.props;
-    const fieldList = form.getFieldValue(formkeys);
-    fieldList.push(key);
+    try {
+      await this.setStateAsync({ addingField: true });
 
-    const element = fieldConfList.find((item) => {
-      return item.field === key;
-    });
+      const { fieldConfList, form, onAddField } = this.props;
 
-    if (element) {
-      const { field, enumName } = element;
-
-      this.curEnum[key] = await this.mapOptions({ field, enumName });
-
-      form.setFieldsValue({
-        [formkeys]: fieldList,
+      const element = fieldConfList.find((item) => {
+        return item.field === key;
       });
+
+      if (element) {
+        const fieldList = form.getFieldValue(formkeys);
+        fieldList.push(element);
+
+        const { enumItems } = this.state;
+        const newEnumItems = _.cloneDeep(enumItems);
+        newEnumItems[key] = await onAddField(element);
+
+        await this.setStateAsync({ enumItems: newEnumItems });
+
+        form.setFieldsValue({
+          [formkeys]: fieldList,
+        });
+      }
+    } catch (ex) {
+      console.warn(ex);
+    } finally {
+      await this.setStateAsync({ addingField: false });
+    }
+  }
+
+  // 验证触发
+  onValidate(element: FieldConf, value: any, callback: any) {
+    const { onValidate } = this.props;
+    if (onValidate) {
+      onValidate(element, value, callback);
+    } else {
+      callback();
     }
   }
 
   // 删除字段
   onDelete(id: string) {
     const { form } = this.props;
-    const fieldList: string[] = form.getFieldValue(formkeys);
+    const addedFieldList: FieldConf[] = form.getFieldValue(formkeys);
+
     form.setFieldsValue({
-      [formkeys]: fieldList.filter(key => key !== id),
+      [formkeys]: addedFieldList.filter(element => element.field !== id),
     });
   }
+
+  // 搜索
+  onSearch = _.debounce(async ({ field, value }: { field: string; value: string }) => {
+    try {
+      await this.setStateAsync({ searching: true });
+      const { onSearch } = this.props;
+      const res = onSearch && _getLastPromise.run(async () => {
+        return await onSearch({ field, value });
+      });
+      const result = await res;
+      if (result && !result.cancel) {
+        const { enumItems } = this.state;
+        const newEnumItems = _.cloneDeep(enumItems);
+        newEnumItems[field] = result.result
+        await this.setStateAsync({ enumItems: newEnumItems });
+      }
+    } catch (ex) {
+      console.warn(ex);
+    } finally {
+      await this.setStateAsync({ searching: false });
+    }
+  }, 500);
 
   // 保存字段
   onSave() {
@@ -104,136 +129,90 @@ class BatchEditModal extends PureComponent<BatchEditModalProps, BatchEditModalSt
     form.resetFields();
   }
 
-  // 获取组件
-  getInput(key: string) {
-    const { fieldConfList } = this.props;
-    const element = fieldConfList.find((item) => {
-      return item.field === key;
+  async setStateAsync<K extends keyof BatchEditModalState>(params: Pick<BatchEditModalState, K>) {
+    return new Promise((resolve) => {
+      this.setState(params, resolve);
     });
-
-    if (!element) {
-      return null;
-    }
-
-    const { compType } = element;
-
-    switch (compType) {
-      case dicFieldType.dropDownList:
-        return (
-          <Select>
-            {getOptions(this.curEnum[key])}
-          </Select>
-        );
-      case dicFieldType.dropDownListMultiple:
-        return (
-          <Select
-            showSearch
-            optionFilterProp="children"
-            filterOption={onFilterOption}
-            mode="multiple"
-          >
-            {getOptions(this.curEnum[key])}
-          </Select>
-        );
-      default:
-        return null;
-    }
-  }
-
-  // 获取字段名
-  getFieldConfValue(key: string) {
-    const { fieldConfList } = this.props;
-    const element = fieldConfList.find((item) => {
-      return item.field === key;
-    });
-    if (element) {
-      return element.fieldName;
-    }
-    return undefined;
-  }
-
-  // 获取枚举值
-  async mapOptions({ field, enumName }: { field: string; enumName: string; }) {
-    // const { enumBusSign, enumWorkGroup, getEnum } = this.props;
-
-    // if (enumName) {
-    //   const res = await getEnum(enumName);
-    //   return res;
-    // } else if (field === 'busSign') {
-    //   return enumBusSign;
-    // } else if (field === 'teamWork') {
-    //   return enumWorkGroup;
-    // } else {
-    //   return {};
-    // }
-
-    return {};
   }
 
   render() {
-    const { form, visible, fieldConfList } = this.props;
-    const { fetching } = this.state;
+    const { form, visible, fieldConfList, modalProps } = this.props;
+    const { saving, searching, addingField, enumItems } = this.state;
 
     const { getFieldDecorator, getFieldValue } = form;
 
     getFieldDecorator(formkeys, { initialValue: [] });
-    const fieldList: string[] = getFieldValue(formkeys);
+    const addedFieldList: FieldConf[] = getFieldValue(formkeys);
+
+    const fieldList: string[] = addedFieldList.map((item) => {
+      return item.field;
+    });
 
     // 对用户选择的项进行过滤
     const filteredFieldConfList = fieldConfList.filter((item) => {
       return !fieldList.includes(item.field);
     });
 
+    const finModalProps: ModalProps = {
+      title: "批量修改",
+      closable: false,
+      width: 700,
+      visible,
+      maskClosable: false,
+      style: {
+        top: 20,
+      },
+      bodyStyle: {
+        overflowY: 'scroll',
+        maxHeight: window.innerHeight - 20,
+      },
+      onOk: this.onSave,
+      onCancel: this.onClose,
+      okButtonProps: {
+        loading: saving,
+      },
+      cancelButtonProps: {
+        disabled: saving,
+      },
+      ...modalProps,
+    };
+
     return (
-      <Modal
-        title="业务模式批量修改"
-        closable={false}
-        width={700}
-        visible={visible}
-        maskClosable={false}
-        style={{
-          top: 20,
-        }}
-        bodyStyle={{
-          overflowY: 'scroll',
-          maxHeight: 600,
-        }}
-        onOk={this.onSave}
-        onCancel={this.onClose}
-        okButtonProps={{
-          loading: fetching,
-        }}
-        cancelButtonProps={{
-          disabled: fetching,
-        }}
-      >
+      <Modal {...finModalProps}>
         <div>
           <Form style={{ marginTop: 10 }}>
             {
-              fieldList.map((key) => {
+              addedFieldList.map((element) => {
+                const { field: key, fieldName, required } = element;
                 return (
                   <Row key={key} gutter={20}>
                     <Col span={11}>
                       <FormItem labelCol={{ span: 7 }} wrapperCol={{ span: 17 }} label="修改字段">
                         {getFieldDecorator(`oldFiled[${key}]`, {
-                          initialValue: this.getFieldConfValue(key),
-                          rules: [{
-                            required: true,
-                            message: '必填',
-                          }],
+                          initialValue: fieldName,
                         })(
                           <Input placeholder="修改字段" disabled />
                         )}
                       </FormItem>
                     </Col>
                     <Col span={11}>
-                      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} label="修改为">
+                      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} hasFeedback label="修改为">
                         {getFieldDecorator(`newVal[${key}]`, {
                           rules: [{
-                            required: !['busSign'].includes(key),
+                            required,
                             message: '必填',
+                          }, {
+                            validator: async (rule, value, callback) => {
+                              this.onValidate(element, value, callback);
+                            }
                           }],
-                        })(this.getInput(key))}
+                        })(mapComponent({
+                          key,
+                          searching,
+                          fieldConfList: addedFieldList,
+                          enumItems,
+                          onSearch: this.onSearch,
+                        }))}
                       </FormItem>
                     </Col>
                     <Col span={2}>
@@ -268,7 +247,7 @@ class BatchEditModal extends PureComponent<BatchEditModalProps, BatchEditModalSt
                           )
                         }
                       >
-                        <Button>
+                        <Button loading={addingField}>
                           添加字段
                           <Icon type="down" />
                         </Button>

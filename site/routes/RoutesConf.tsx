@@ -21,6 +21,11 @@ const TestA = Loadable({
 const BatchEditModal = Loadable({
   loader: () => import('@site/pages/BatchEditModal'),
   loading: LoadingComponent,
+});
+
+const TableExt = Loadable({
+  loader: () => import('@site/pages/TableExt'),
+  loading: LoadingComponent,
 })
 
 function RoutesConf() {
@@ -29,6 +34,7 @@ function RoutesConf() {
       <Route exact path="/FormExt" component={FormExt} />
       <Route exact path="/TestA" component={TestA} />
       <Route exact path="/BatchEditModal" component={BatchEditModal} />
+      <Route exact path="/TableExt" component={TableExt} />
     </Switch>
   );
 }

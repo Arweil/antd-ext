@@ -23,6 +23,7 @@ module.exports = {
       },
     ],
     require.resolve('@babel/preset-react'),
+    require.resolve('@babel/preset-typescript'),
   ],
   // 从前往后执行
   plugins: [
@@ -40,7 +41,7 @@ module.exports = {
       require.resolve('babel-plugin-import'),
       {
         libraryName: 'lodash',
-        libraryDirectory: 'lib', // default is lib
+        libraryDirectory: '', // default is lib
         camel2DashComponentName: false,
       },
       'lodash',
