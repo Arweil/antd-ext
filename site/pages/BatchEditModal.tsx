@@ -50,16 +50,16 @@ export default class BatchEditModal extends PureComponent<{}, {
     await sleep(500);
 
     switch (element.compType) {
-      case dicFieldType.dropDownList:
-      case dicFieldType.dropDownListMultiple:
+      case dicFieldType.Select:
+      case dicFieldType.SelectMultiple:
         return Promise.resolve({
           itemA: 'Item A',
           itemB: 'Item B',
           itemC: 'Item C',
         });
-      case dicFieldType.dropDownListSearch:
+      case dicFieldType.SelectSearch:
         return Promise.resolve({});
-      case dicFieldType.cascader:
+      case dicFieldType.Cascader:
         return Promise.resolve([
           {
             label: 'Item A Item A Item A Item A',
@@ -104,17 +104,21 @@ export default class BatchEditModal extends PureComponent<{}, {
   async queryConf() {
     const res: FieldConf[] = await Promise.resolve([
       {
-        compType: 'dropDownList', field: 'dropDownList', fieldName: 'dropDownList', enumName: 'A'
+        compType: 'Select', field: 'Select', fieldName: 'Select', enumName: 'A'
       }, {
-        compType: 'dropDownListSearch', field: 'dropDownListSearch', fieldName: 'dropDownListSearch', enumName: ''
+        compType: 'SelectSearch', field: 'SelectSearch', fieldName: 'SelectSearch', enumName: ''
       }, {
-        compType: 'dropDownListMultiple', field: 'dropDownListMultiple', fieldName: 'dropDownListMultiple', enumName: ''
+        compType: 'SelectMultiple', field: 'SelectMultiple', fieldName: 'SelectMultiple', enumName: ''
       }, {
-        compType: 'cascader', field: 'cascader', fieldName: 'cascader', enumName: ''
+        compType: 'Cascader', field: 'Cascader', fieldName: 'Cascader', enumName: ''
       }, {
-        compType: 'entryField', field: 'entryField', fieldName: 'entryField', enumName: ''
+        compType: 'Input', field: 'Input', fieldName: 'Input', enumName: ''
       }, {
-        compType: 'datePicker', field: 'datePicker', fieldName: 'datePicker', enumName: ''
+        compType: 'DatePicker', field: 'DatePicker', fieldName: 'DatePicker', enumName: ''
+      }, {
+        compType: 'SelectSearchSelect', field: 'SelectSearchSelect', fieldName: 'SelectSearchSelect', enumName: ''
+      }, {
+        compType: 'SelectSearchInput', field: 'SelectSearchInput', fieldName: 'SelectSearchInput', enumName: ''
       }
     ]);
 
@@ -138,6 +142,14 @@ export default class BatchEditModal extends PureComponent<{}, {
           modalProps={{
             visible,
             title: 'Batch Edit',
+          }}
+          compProps={{
+            // SelectSearchInput: {
+            //   showInput: false,
+            // },
+            // SelectSearchSelect: {
+            //   showSelectAfter: false,
+            // }
           }}
           onSave={this.onSave}
           onClose={this.onClose}

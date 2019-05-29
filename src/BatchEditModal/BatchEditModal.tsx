@@ -18,7 +18,6 @@ class BatchEditModal extends PureComponent<BatchEditModalProps, BatchEditModalSt
     this.state = {
       saving: false,
       addingField: false,
-      searching: false,
       enumItems: {},
     };
 
@@ -85,7 +84,6 @@ class BatchEditModal extends PureComponent<BatchEditModalProps, BatchEditModalSt
   // 搜索
   onSearch = _.debounce(async ({ field, value }: { field: string; value: string }) => {
     try {
-      await this.setStateAsync({ searching: true });
       const { onSearch } = this.props;
       const res = onSearch && _getLastPromise.run(async () => {
         return await onSearch({ field, value });
@@ -99,8 +97,6 @@ class BatchEditModal extends PureComponent<BatchEditModalProps, BatchEditModalSt
       }
     } catch (ex) {
       console.warn(ex);
-    } finally {
-      await this.setStateAsync({ searching: false });
     }
   }, 500);
 
@@ -136,8 +132,8 @@ class BatchEditModal extends PureComponent<BatchEditModalProps, BatchEditModalSt
   }
 
   render() {
-    const { form, visible, fieldConfList, modalProps } = this.props;
-    const { saving, searching, addingField, enumItems } = this.state;
+    const { form, visible, fieldConfList, modalProps, compProps } = this.props;
+    const { saving, addingField, enumItems } = this.state;
 
     const { getFieldDecorator, getFieldValue } = form;
 
@@ -164,7 +160,7 @@ class BatchEditModal extends PureComponent<BatchEditModalProps, BatchEditModalSt
       },
       bodyStyle: {
         overflowY: 'scroll',
-        maxHeight: window.innerHeight - 20,
+        maxHeight: window.innerHeight - 150,
       },
       onOk: this.onSave,
       onCancel: this.onClose,
@@ -186,17 +182,8 @@ class BatchEditModal extends PureComponent<BatchEditModalProps, BatchEditModalSt
                 const { field: key, fieldName, required } = element;
                 return (
                   <Row key={key} gutter={20}>
-                    <Col span={11}>
-                      <FormItem labelCol={{ span: 7 }} wrapperCol={{ span: 17 }} label="修改字段">
-                        {getFieldDecorator(`oldFiled[${key}]`, {
-                          initialValue: fieldName,
-                        })(
-                          <Input placeholder="修改字段" disabled />
-                        )}
-                      </FormItem>
-                    </Col>
-                    <Col span={11}>
-                      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} hasFeedback label="修改为">
+                    <Col span={22}>
+                      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} hasFeedback label={fieldName}>
                         {getFieldDecorator(`newVal[${key}]`, {
                           rules: [{
                             required,
@@ -208,7 +195,7 @@ class BatchEditModal extends PureComponent<BatchEditModalProps, BatchEditModalSt
                           }],
                         })(mapComponent({
                           key,
-                          searching,
+                          compProps,
                           fieldConfList: addedFieldList,
                           enumItems,
                           onSearch: this.onSearch,

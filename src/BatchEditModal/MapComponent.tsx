@@ -1,19 +1,23 @@
 import React from 'react';
-import { FieldConf, EnumType } from './types';
-import { Select, Spin, Cascader, Input, DatePicker } from 'antd';
+import _ from 'lodash';
+import { FieldConf, EnumType, CompProps } from './types';
+import { Select, Spin, Cascader, DatePicker } from 'antd';
 import { OptionProps } from 'antd/lib/select';
 import { CascaderOptionType } from 'antd/lib/cascader';
+import { SelectInput, SelectSelect, InputExt } from '@/BaseComponentExt';
 
 const SelectOption = Select.Option;
 
 // 字段类型
 export const dicFieldType = Object.seal({
-  dropDownList: 'dropDownList', // 下拉列表
-  dropDownListSearch: 'dropDownListSearch', // 下拉异步搜索框
-  dropDownListMultiple: 'dropDownListMultiple', // 下拉多选
-  cascader: 'cascader', // 级联选择
-  entryField: 'entryField', // 输入框
-  datePicker: 'datePicker', // 日期选择
+  Select: 'Select', // 下拉列表
+  SelectSearch: 'SelectSearch', // 下拉异步搜索框
+  SelectMultiple: 'SelectMultiple', // 下拉多选
+  SelectSearchInput: 'SelectSearchInput', // 下拉异步搜索框 + 文本框
+  SelectSearchSelect: 'SelectSearchSelect', // 下拉异步搜索框 + 搜索
+  Cascader: 'Cascader', // 级联选择
+  Input: 'Input', // 输入框
+  DatePicker: 'DatePicker', // 日期选择
 });
 
 function getOptions(enumOption?: EnumType) {
@@ -42,11 +46,11 @@ function isCascaderOptionType(params: any): params is Array<CascaderOptionType> 
 export default function mapComponent(props: {
   key: string;
   fieldConfList: FieldConf[];
-  searching: boolean;
+  compProps: CompProps;
   enumItems: { [key: string]: EnumType | CascaderOptionType[] };
   onSearch?: (params: { field: string, value: string }) => void;
 }) {
-  const { key, fieldConfList, enumItems, onSearch, searching } = props;
+  const { key, fieldConfList, enumItems, onSearch, compProps } = props;
 
   const element = fieldConfList.find((item) => {
     return item.field === key;
@@ -63,62 +67,103 @@ export default function mapComponent(props: {
     return null;
   }
 
+  async function _onSearch(value: string) {
+    if (onSearch) {
+      await onSearch({ field: key, value });
+    }
+  }
+
   switch (compType) {
-    case dicFieldType.dropDownList:
+    case dicFieldType.Select:
       return (
         <Select
-          showSearch
-          optionFilterProp="children"
-          filterOption={onFilterOption}
           dropdownMatchSelectWidth={false}
           placeholder="请选择"
+          {...compProps.Select}
+          optionFilterProp="children"
+          filterOption={onFilterOption}
+          showSearch
         >
           {isEnumType(dataSource) ? getOptions(dataSource) : {}}
         </Select>
       );
-    case dicFieldType.dropDownListSearch:
+    case dicFieldType.SelectSearch:
       return (
         <Select
+          placeholder="请选择"
+          dropdownMatchSelectWidth={false}
+          {...compProps.Select}
           showSearch
           filterOption={false}
-          dropdownMatchSelectWidth={false}
-          notFoundContent={searching ? <Spin size="small" /> : null}
-          placeholder="请选择"
-          onSearch={async (value) => {
-            if (onSearch) {
-              await onSearch({ field: key, value });
-            }
-          }}
+          onSearch={_onSearch}
         >
           {isEnumType(dataSource) ? getOptions(dataSource) : {}}
         </Select>
       );
-    case dicFieldType.dropDownListMultiple:
+    case dicFieldType.SelectMultiple:
       return (
         <Select
+          placeholder="请选择"
+          dropdownMatchSelectWidth={false}
+          {...compProps.Select}
           showSearch
           optionFilterProp="children"
           filterOption={onFilterOption}
-          dropdownMatchSelectWidth={false}
           mode="multiple"
-          placeholder="请选择"
         >
           {isEnumType(dataSource) ? getOptions(dataSource) : {}}
         </Select>
       );
-    case dicFieldType.cascader:
+    case dicFieldType.Cascader:
       return (
         <Cascader
           placeholder="请选择"
-          options={isCascaderOptionType(dataSource) ? dataSource : undefined} />
+          {...compProps.Cascader}
+          options={isCascaderOptionType(dataSource) ? dataSource : undefined}
+        />
       );
-    case dicFieldType.entryField:
+    case dicFieldType.Input:
       return (
-        <Input placeholder="请输入" />
+        <InputExt
+          placeholder="请输入"
+          {...compProps.Input}
+        />
       );
-    case dicFieldType.datePicker:
+    case dicFieldType.DatePicker:
       return (
-        <DatePicker placeholder="请选择" style={{ width: '100%' }} />
+        <DatePicker
+          placeholder="请选择"
+          {...compProps.DatePicker}
+          style={{ width: '100%' }}
+        />
+      );
+    case dicFieldType.SelectSearchInput:
+      compProps.SelectSearchInput = _.merge(compProps.SelectSearchInput, {
+        selectProps: {
+          showSearch: true,
+          onSearch: _onSearch,
+          dataMap: isEnumType(dataSource) ? dataSource : {},
+        }
+      });
+
+      return (
+        <SelectInput
+          {...compProps.SelectSearchInput}
+        />
+      );
+    case dicFieldType.SelectSearchSelect:
+      compProps.SelectSearchSelect = _.merge(compProps.SelectSearchSelect, {
+        selectPropsBefore: {
+          showSearch: true,
+          onSearch: _onSearch,
+          dataMap: isEnumType(dataSource) ? dataSource : {},
+        }
+      });
+
+      return (
+        <SelectSelect
+          {...compProps.SelectSearchSelect}
+        />
       );
     default:
       return null;

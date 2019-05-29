@@ -17,7 +17,7 @@ interface FSelectPropsExt {
   optionAll?: boolean;
 }
 
-export interface SelectExtend<T> extends FSelectPropsExt, SelectProps<T> { }
+export interface SelectExtend<T = SelectValue> extends FSelectPropsExt, SelectProps<T> { }
 
 const { Option } = Select;
 

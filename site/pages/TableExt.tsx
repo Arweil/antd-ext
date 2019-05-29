@@ -8,8 +8,7 @@ interface dataSourceDTO {
   fieldC: string;
   fieldD: string;
   fieldE: string;
-  fieldF: string;
-  fieldG: number;
+  fieldF: number;
 }
 
 interface sumDTO {
@@ -35,44 +34,44 @@ export default class PageTableExt extends PureComponent<{}, {
       loading: false,
       pageIndex: 1,
       pageSize: 10,
-      total: 0,
+      total: 100,
     }
 
     this.columns = [
       {
-        title: 'Field A',
-        dataIndex: 'FieldA',
+        title: 'Index',
+        dataIndex: 'Index',
         render: (text, record, index) => {
           const { pageIndex, pageSize } = this.state;
           return ((pageIndex - 1) * pageSize) + index + 1;
         },
         footerRender: (text, record) => {
-          return '合计';
+          return 'total';
         },
       },
       {
+        title: 'Field A',
+        dataIndex: 'fieldA',
+      },
+      {
         title: 'Field B',
-        dataIndex: 'FieldB',
+        dataIndex: 'fieldB',
       },
       {
         title: 'Field C',
-        dataIndex: 'FieldC',
+        dataIndex: 'fieldC',
       },
       {
         title: 'Field D',
-        dataIndex: 'FieldD',
+        dataIndex: 'fieldD',
       },
       {
         title: 'Field E',
-        dataIndex: 'FieldE',
+        dataIndex: 'fieldE',
       },
       {
         title: 'Field F',
-        dataIndex: 'FieldF',
-      },
-      {
-        title: 'Field G',
-        dataIndex: 'FieldG',
+        dataIndex: 'fieldF',
         footerIndex: 'sum',
       },
     ];
@@ -81,11 +80,33 @@ export default class PageTableExt extends PureComponent<{}, {
   }
 
   componentDidMount() {
-
+    this.queryData(1);
   }
 
   onPageChange({ pageIndex, pageSize }: { pageIndex: number; pageSize?: number; }) {
+    this.queryData(pageIndex);
+  }
 
+  async queryData(pageIndex: number) {
+    const data = [];
+    for (let i = (pageIndex - 1) * 10 + 1; i < pageIndex * 10 + 1; i++) {
+      data.push({
+        fieldA: `item A${i}`,
+        fieldB: `item B${i}`,
+        fieldC: `item C${i}`,
+        fieldD: `item D${i}`,
+        fieldE: `item E${i}`,
+        fieldF: 0,
+      });
+    }
+
+    const res = await Promise.resolve(data);
+    this.setState({
+      dataSource: res,
+      sumData: { sum: 100 },
+      pageIndex,
+      pageSize: 10,
+    });
   }
 
   render() {

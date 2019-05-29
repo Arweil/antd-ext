@@ -5,7 +5,7 @@ import { SelectValue } from 'antd/lib/select';
 
 const InputGroup = Input.Group;
 
-interface SelectInputProps<SelectValueBeforeType, SelectValueAfterType> {
+export interface SelectSelectProps<SelectValueBeforeType = SelectValue, SelectValueAfterType = SelectValue> {
   value?: { // 默认值
     selectValueBefore?: SelectValueBeforeType,
     selectValueAfter?: SelectValueAfterType,
@@ -17,26 +17,29 @@ interface SelectInputProps<SelectValueBeforeType, SelectValueAfterType> {
   onChange?: (params: { selectValueBefore?: SelectValueBeforeType; selectValueAfter?: SelectValueAfterType }) => void; // 重写onChange事件
 }
 
-interface SelectInputState<SelectValueBeforeType, SelectValueAfterType> {
+interface SelectSelectState<SelectValueBeforeType, SelectValueAfterType> {
   selectValueBefore?: SelectValueBeforeType;
   selectValueAfter?: SelectValueAfterType;
 }
 
-export default class SelectInput<
+export default class SelectSelect<
   SelectValueBeforeType = SelectValue,
   SelectValueAfterType = SelectValue,
   >
   extends PureComponent<
-  SelectInputProps<SelectValueBeforeType, SelectValueAfterType>,
-  SelectInputState<SelectValueBeforeType, SelectValueAfterType>
+  SelectSelectProps<SelectValueBeforeType, SelectValueAfterType>,
+  SelectSelectState<SelectValueBeforeType, SelectValueAfterType>
   > {
-  constructor(props: Readonly<SelectInputProps<SelectValueBeforeType, SelectValueAfterType>>) {
+  constructor(props: Readonly<SelectSelectProps<SelectValueBeforeType, SelectValueAfterType>>) {
     super(props);
 
     this.state = {
       selectValueBefore: undefined,
       selectValueAfter: undefined,
     }
+
+    this.onSelectBeforeChange = this.onSelectBeforeChange.bind(this);
+    this.onSelectAfterChange = this.onSelectAfterChange.bind(this);
   }
 
   static getDerivedStateFromProps(nextProps: any) {
@@ -48,48 +51,68 @@ export default class SelectInput<
     return null;
   }
 
-  // onSelectChange = (value: SelectValueType, option: React.ReactElement<any> | React.ReactElement<any>[]) => {
-  //   const { selectProps } = this.props;
-  //   const { inputValue } = this.state;
+  // 前一个Select onChange
+  onSelectBeforeChange(value: SelectValueBeforeType, option: React.ReactElement<any> | React.ReactElement<any>[]) {
+    const { selectPropsBefore } = this.props;
+    const { selectValueAfter } = this.state;
 
-  //   selectProps && selectProps.onChange && selectProps.onChange(value, option);
+    selectPropsBefore && selectPropsBefore.onChange && selectPropsBefore.onChange(value, option);
 
-  //   if (!('value' in this.props)) {
-  //     this.setState({ selectValue: value }, () => {
-  //       this.onChange({ selectValue: value, inputValue });
-  //     });
-  //   } else {
-  //     this.onChange({ selectValue: value, inputValue });
-  //   }
-  // }
+    if (!('value' in this.props)) {
+      this.setState({ selectValueBefore: value }, () => {
+        this.onChange({ selectValueBefore: value, selectValueAfter });
+      });
+    } else {
+      this.onChange({ selectValueBefore: value, selectValueAfter });
+    }
+  }
 
-  // onChange(params: { selectValue?: SelectValueType; inputValue?: InputValueType }) {
-  //   const { onChange } = this.props;
-  //   onChange && onChange(params);
-  // }
+  // 后一个Select onChange
+  onSelectAfterChange(value: SelectValueAfterType, option: React.ReactElement<any> | React.ReactElement<any>[]) {
+    const { selectPropsAfter } = this.props;
+    const { selectValueBefore } = this.state;
+
+    selectPropsAfter && selectPropsAfter.onChange && selectPropsAfter.onChange(value, option);
+
+    if (!('value' in this.props)) {
+      this.setState({ selectValueAfter: value }, () => {
+        this.onChange({ selectValueBefore, selectValueAfter: value });
+      });
+    } else {
+      this.onChange({ selectValueBefore, selectValueAfter: value });
+    }
+  }
+
+  onChange(params: { selectValueBefore?: SelectValueBeforeType; selectValueAfter?: SelectValueAfterType }) {
+    const { onChange } = this.props;
+    onChange && onChange(params);
+  }
 
   render() {
     const { selectPropsBefore, selectPropsAfter, showSelectBefore, showSelectAfter } = this.props;
 
+    const _showSelectBefore = showSelectBefore === undefined || showSelectBefore;
+    const _showSelectAfter = showSelectAfter === undefined || showSelectAfter;
+
     return (
       <InputGroup compact>
         {
-          showSelectBefore === undefined || showSelectBefore ? (
+          _showSelectBefore ? (
             <SelectExt<SelectValueBeforeType>
-              style={{ width: '50%' }}
+              style={{ width: _showSelectAfter ? '50%' : '100%' }}
               optionAll={false}
               {...selectPropsBefore}
-              // onChange={this.onSelectChange}
+              onChange={this.onSelectBeforeChange}
             />
           ) : null
         }
         {
-          showSelectAfter === undefined || showSelectAfter ? (
+          _showSelectAfter ? (
             <SelectExt<SelectValueAfterType>
-              style={{ width: '50%' }}
+              style={{ width: _showSelectBefore ? '50%' : '100%' }}
               optionAll={false}
               {...selectPropsAfter}
-              // onChange={this.onSelectChange}
+              onChange={this.onSelectAfterChange}
             />
           ) : null
         }

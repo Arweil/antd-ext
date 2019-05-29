@@ -9,7 +9,7 @@ const InputGroup = Input.Group;
 
 type InputValueType = string | number | string[];
 
-interface SelectInputProps<SelectValueType> {
+export interface SelectInputProps<SelectValueType = SelectValue> {
   value?: { // 默认值
     selectValue?: SelectValueType,
     inputValue?: InputValueType,
@@ -91,12 +91,15 @@ export default class SelectInput<
   render() {
     const { selectProps, inputProps, showSelect, showInput } = this.props;
 
+    const _showSelect = showSelect === undefined || showSelect;
+    const _showInput = showInput === undefined || showInput;
+
     return (
       <InputGroup compact>
         {
-          showSelect === undefined || showSelect ? (
+          _showSelect ? (
             <SelectExt<SelectValueType>
-              style={{ width: '50%' }}
+              style={{ width: _showInput ? '50%' : '100%' }}
               optionAll={false}
               {...selectProps}
               onChange={this.onSelectChange}
@@ -104,9 +107,9 @@ export default class SelectInput<
           ) : null
         }
         {
-          showInput === undefined || showInput ? (
+          _showInput ? (
             <InputExt
-              style={{ width: '50%' }}
+              style={{ width: _showSelect ? '50%' : '100%' }}
               {...inputProps}
               onChange={this.onInputChange}
             />
