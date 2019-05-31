@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Button } from 'antd';
 import BatchEditModalComp, { FieldConf as FieldConfRequired, dicFieldType} from '@/BatchEditModal';
+import ModalExt from '@/BaseComponentExt/ModalExt';
 
 interface FieldConf {
   field: string;
@@ -157,6 +158,13 @@ export default class BatchEditModal extends PureComponent<{}, {
           onSearch={this.onSearch}
           onValidate={this.onValidate}
         />
+
+        <ModalExt
+          title="ModalExt"
+          visible={true}
+        >
+          111
+        </ModalExt>
       </div>
     )
   }
