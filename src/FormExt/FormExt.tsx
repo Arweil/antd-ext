@@ -72,7 +72,15 @@ class FormScope extends PureComponent<FormScopeProps, FormScopeState> {
       <Form className={className} onSubmit={onSubmit} {...resetProps}>
         <Row gutter={gutter}>
           {formItemList.map((formItemProps) => {
-            return createFormItem(formItemProps, form, className);
+            const { formItem, component } = formItemProps;
+            const { offset, span = 8 } = formItem;
+            const { key } = component;
+
+            return (
+              <Col key={key} span={span} offset={offset}>
+                {createFormItem(formItemProps, form, className)}
+              </Col>
+            );
           })}
           {
             needBtnGroup ? (

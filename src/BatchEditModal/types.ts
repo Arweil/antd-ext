@@ -1,39 +1,38 @@
 import { WrappedFormUtils } from "antd/lib/form/Form";
 import { ModalProps } from 'antd/lib/modal';
-import { SelectExtend } from '@/BaseComponentExt/SelectExt';
-import { SelectInputProps } from '@/BaseComponentExt/SelectInput';
-import { SelectSelectProps } from '@/BaseComponentExt/SelectSelect';
-import { InputProps } from 'antd/lib/input';
-import { CascaderProps } from 'antd/lib/cascader';
-import { DatePickerProps } from 'antd/lib/date-picker/interface';
+import { CascaderProps, CascaderOptionType } from 'antd/lib/cascader';
+import { FSelectProps } from '@/FormExt/FSelect';
+import { FItemExtraProps, AllFItemCompsType } from '@/FormExt/FormItem';
+import { FDatePickerProps } from '@/FormExt/FDatePicker';
+import { FInputProps } from '@/FormExt/FInput';
+
+export type InitialFieldValueType = EnumType | CascaderOptionType[] | undefined;
 
 export interface FieldConf {
   field: string;
-  compType: 
-    'Select' | 'SelectSearch' | 'SelectMultiple' |
-    'SelectSearchInput' | 'SelectSearchSelect' | 'Cascader' | 
-    'Input' | 'DatePicker' | string;
+  compProps: AllFItemCompsType;
   enumName: string;
   fieldName: string;
   required: boolean;
+  disabled?: boolean;
 }
 
-export interface BatchEditModalProps extends ModalProps {
+export interface BatchEditModalProps {
   form: WrappedFormUtils;
   fieldConfList: FieldConf[];
   modalProps: ModalProps;
-  compProps: CompProps;
   onSave: (params: { [key: string]: string | undefined }) => Promise<void>;
   onClose: () => void;
-  onAddField: (params: FieldConf) => Promise<EnumType>;
-  onSearch?: (params: { field: string, value: string }) => Promise<EnumType>;
-  onValidate?: (element: FieldConf, value: any, callback: any) => void;
+  onAddField?: (addField: FieldConf, addedFields: FieldConf[]) => Promise<InitialFieldValueType> | void;
+  onSearch?: (params: { field: string, value: string; }) => Promise<EnumType>;
+  onValidate?: (element: FieldConf, value: any, callback: any) => Promise<void>;
+  onDelete?: (deleField: FieldConf, unDeleFields: FieldConf[]) => void | Promise<void>;
 }
 
 export interface BatchEditModalState {
   saving: boolean;
   addingField: boolean;
-  enumItems: { [key: string]: EnumType };
+  enumItems: { [key: string]: InitialFieldValueType };
 }
 
 export interface EnumType {
@@ -41,13 +40,10 @@ export interface EnumType {
 }
 
 export interface CompProps {
-  Select?: SelectExtend;
-  SelectSearch?: SelectExtend;
-  SelectMultiple?: SelectExtend;
-  SelectSearchInput?: SelectInputProps;
-  SelectSearchSelect?: SelectSelectProps;
-  Cascader?: CascaderProps;
-  Input?: InputProps;
-  DatePicker?: DatePickerProps;
+  Select?: FSelectProps;
+  // Cascader?: CascaderProps;
+  Input?: FInputProps;
+  DatePicker?: FDatePickerProps;
+  Extra?: FItemExtraProps;
 }
 

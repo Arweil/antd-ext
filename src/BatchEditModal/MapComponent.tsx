@@ -1,10 +1,10 @@
 import React from 'react';
 import _ from 'lodash';
 import { FieldConf, EnumType, CompProps } from './types';
-import { Select, Spin, Cascader, DatePicker } from 'antd';
+import { Select, Cascader, DatePicker } from 'antd';
 import { OptionProps } from 'antd/lib/select';
 import { CascaderOptionType } from 'antd/lib/cascader';
-import { SelectInput, SelectSelect, InputExt } from '@/BaseComponentExt';
+import { SelectInput, SelectSelect, InputExt } from '../BaseComponentExt';
 
 const SelectOption = Select.Option;
 
@@ -47,8 +47,8 @@ export default function mapComponent(props: {
   key: string;
   fieldConfList: FieldConf[];
   compProps: CompProps;
-  enumItems: { [key: string]: EnumType | CascaderOptionType[] };
-  onSearch?: (params: { field: string, value: string }) => void;
+  enumItems: { [key: string]: EnumType | CascaderOptionType[] | undefined };
+  onSearch?: (params: { field: string; value: string; }) => void;
 }) {
   const { key, fieldConfList, enumItems, onSearch, compProps } = props;
 
@@ -62,10 +62,6 @@ export default function mapComponent(props: {
 
   const { compType } = element;
   const dataSource = enumItems[key];
-
-  if (!dataSource) {
-    return null;
-  }
 
   async function _onSearch(value: string) {
     if (onSearch) {
@@ -84,7 +80,7 @@ export default function mapComponent(props: {
           filterOption={onFilterOption}
           showSearch
         >
-          {isEnumType(dataSource) ? getOptions(dataSource) : {}}
+          {isEnumType(dataSource) ? getOptions(dataSource) : null}
         </Select>
       );
     case dicFieldType.SelectSearch:
@@ -97,7 +93,7 @@ export default function mapComponent(props: {
           filterOption={false}
           onSearch={_onSearch}
         >
-          {isEnumType(dataSource) ? getOptions(dataSource) : {}}
+          {isEnumType(dataSource) ? getOptions(dataSource) : null}
         </Select>
       );
     case dicFieldType.SelectMultiple:
@@ -111,7 +107,7 @@ export default function mapComponent(props: {
           filterOption={onFilterOption}
           mode="multiple"
         >
-          {isEnumType(dataSource) ? getOptions(dataSource) : {}}
+          {isEnumType(dataSource) ? getOptions(dataSource) : null}
         </Select>
       );
     case dicFieldType.Cascader:
@@ -119,7 +115,7 @@ export default function mapComponent(props: {
         <Cascader
           placeholder="请选择"
           {...compProps.Cascader}
-          options={isCascaderOptionType(dataSource) ? dataSource : undefined}
+          options={isCascaderOptionType(dataSource) ? dataSource : []}
         />
       );
     case dicFieldType.Input:
@@ -138,6 +134,13 @@ export default function mapComponent(props: {
         />
       );
     case dicFieldType.SelectSearchInput:
+      if (compProps.SelectSearchInput) {
+        compProps.SelectSearchInput.selectProps = {
+          dataMap: {},
+          dropdownMatchSelectWidth: false,
+        }
+      }
+
       compProps.SelectSearchInput = _.merge(compProps.SelectSearchInput, {
         selectProps: {
           showSearch: true,
@@ -152,11 +155,28 @@ export default function mapComponent(props: {
         />
       );
     case dicFieldType.SelectSearchSelect:
+      if (compProps.SelectSearchSelect) {
+        if (!compProps.SelectSearchSelect.selectPropsBefore) {
+          compProps.SelectSearchSelect.selectPropsBefore = {
+            dataMap: {},
+            dropdownMatchSelectWidth: false,
+          };
+        }
+        if (!compProps.SelectSearchSelect.selectPropsAfter) {
+          compProps.SelectSearchSelect.selectPropsAfter = {
+            dropdownMatchSelectWidth: false,
+          };
+        }
+      }
+
       compProps.SelectSearchSelect = _.merge(compProps.SelectSearchSelect, {
         selectPropsBefore: {
           showSearch: true,
           onSearch: _onSearch,
           dataMap: isEnumType(dataSource) ? dataSource : {},
+        },
+        selectPropsAfter: {
+          showSearch: true,
         }
       });
 

@@ -1,17 +1,31 @@
 import React from 'react';
-import { Select } from 'antd';
-import { OptionProps } from 'antd/lib/select';
-import { FSelectProps } from './types';
+import { CompExtendsProps, CompDecoratorExtendsProps } from './types';
 import { getLayoutElement } from './utils';
+import SelectExt from '../BaseComponentExt/SelectExt';
+import { SelectProps } from 'antd/lib/select';
 
-const { Option } = Select;
+// Select
+interface FSelectPropsExt {
+  dataMap?: {
+    [key: string]: string;
+    [key: number]: string;
+  };
+  dataList?: {
+    code: string | number;
+    name: string;
+    disabled?: boolean;
+    title?: string;
+    className?: string;
+  }[];
+  optionAll?: boolean;
+}
 
-const onFilterOption = (input: string, option: React.ReactElement<OptionProps>) => {
-  if (typeof option.props.children === 'string') {
-    return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-  }
-  return option;
-};
+export interface SelectExtendsProps extends CompExtendsProps, FSelectPropsExt, SelectProps {
+  type: 'select';
+}
+
+export interface FSelectProps extends SelectExtendsProps, CompDecoratorExtendsProps {
+}
 
 export default function FSelect(props: FSelectProps) {
   const {
@@ -19,42 +33,13 @@ export default function FSelect(props: FSelectProps) {
     rcform,
     key,
     formClassName,
-    dataMap = {}, // 数据源 对象
-    dataList = [], // 数据源 数组
-    optionAll = true, // 是否有 "全部"
-    optionFilterProp = 'children',
-    filterOption = onFilterOption,
     ...restProps
   } = props;
 
   return rcform.getFieldDecorator(key, decoratorOpt)(
-    <Select
-      optionFilterProp={optionFilterProp}
-      filterOption={filterOption}
+    <SelectExt
       getPopupContainer={() => getLayoutElement(formClassName)}
       {...restProps}
-    >
-      {
-        optionAll ? <Option value="all">全部</Option> : null
-      }
-      {Object.keys(dataMap).map((item) => {
-        return (
-          <Option key={item} value={item}>
-            {dataMap[item]}
-          </Option>
-        );
-      })}
-      {
-        dataList.map((item) => {
-          const { code, name, ...restOptionProps } = item;
-          return (
-            // @ts-ignore
-            <Option key={code} {...restOptionProps}>
-              {name}
-            </Option>
-          );
-        })
-      }
-    </Select>
+    />
   );
 };

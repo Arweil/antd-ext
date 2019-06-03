@@ -1,26 +1,63 @@
 import React from 'react';
-import { Col, Form } from 'antd';
+import { Form } from 'antd';
 import { WrappedFormUtils } from 'antd/lib/form/Form';
 import {
-  FInputProps,
-  FTextAreaProps,
-  FSearchProps,
-  FDatePickerProps,
-  FRangePickerProps,
-  FSelectProps,
-
-  FItemInputProps,
-  FItemTextAreaProps,
-  FItemSearchProps,
-  FItemSelectProps,
-  FItemDatePickerProps,
-  FItemRangePickerProps,
-  FItemExtraProps,
+  BaseFormItemProps,
 } from "./types";
 
-import FSelect from './FSelect';
-import FInput from './FInput';
-import FDatePicker from './FDatePicker';
+import FSelect, { SelectExtendsProps, FSelectProps } from './FSelect';
+import FInput, { InputExtendsProps, TextAreaExtendsProps, SearchExtendsProps, FInputProps, FSearchProps, FTextAreaProps } from './FInput';
+import FDatePicker, { DatePickerExtendsProps, RangePickerExtendsProps, FDatePickerProps, FRangePickerProps } from './FDatePicker';
+
+export interface ExtraExtendsProps {
+  type: 'extra',
+  key: string,
+  render: ({ form, key, formClassName }: { form: WrappedFormUtils, key: string, formClassName: string }) => React.ReactNode;
+};
+
+export interface FItemInputProps extends BaseFormItemProps {
+  component: InputExtendsProps;
+}
+
+export interface FItemTextAreaProps extends BaseFormItemProps {
+  component: TextAreaExtendsProps;
+}
+
+export interface FItemSearchProps extends BaseFormItemProps {
+  component: SearchExtendsProps;
+}
+
+export interface FItemDatePickerProps extends BaseFormItemProps {
+  component: DatePickerExtendsProps;
+}
+
+export interface FItemRangePickerProps extends BaseFormItemProps {
+  component: RangePickerExtendsProps;
+}
+
+export interface FItemSelectProps extends BaseFormItemProps {
+  component: SelectExtendsProps;
+}
+
+// Extra component 自定义组件
+export interface FItemExtraProps extends BaseFormItemProps {
+  component: ExtraExtendsProps;
+}
+
+export type NormalCompsType =
+  FInputProps
+  | FSearchProps
+  | FTextAreaProps
+  | FDatePickerProps
+  | FRangePickerProps
+  | FSelectProps;
+
+export type NormalFItemCompsType = 
+  FItemInputProps | FItemSearchProps | FItemTextAreaProps |
+  FItemDatePickerProps | FItemRangePickerProps |
+  FItemSelectProps;
+
+export type AllFItemCompsType = NormalFItemCompsType | FItemExtraProps;
 
 const FormItem = Form.Item;
 
@@ -29,11 +66,7 @@ const defaultFormItemLayout = {
   wrapperCol: { span: 18 },
 };
 
-function formItemSwitch(args:
-  FInputProps | FSearchProps | FTextAreaProps |
-  FDatePickerProps | FRangePickerProps |
-  FSelectProps
-) {
+function formItemSwitch(args: NormalCompsType) {
   switch (args.type) {
     case 'input':
     case 'search':
@@ -48,10 +81,7 @@ function formItemSwitch(args:
 }
 
 function renderNormalComp(
-  { formItem, component }:
-    FItemInputProps | FItemSearchProps | FItemTextAreaProps |
-    FItemDatePickerProps | FItemRangePickerProps |
-    FItemSelectProps,
+  { formItem, component }: NormalFItemCompsType,
   form: WrappedFormUtils,
   formClassName: string
 ) {
@@ -61,7 +91,7 @@ function renderNormalComp(
     noFormItemLayout,
     ...resetProps
   } = formItem;
-  const { key, type } = component;
+  const { type } = component;
 
   // FormItem 属性
   if (!noFormItemLayout) {
@@ -80,17 +110,15 @@ function renderNormalComp(
   }
 
   return (
-    <Col key={key} span={span} offset={offset}>
-      <FormItem {...resetProps}>
-        {
-          formItemSwitch({
-            formClassName,
-            rcform: form,
-            ...component,
-          })
-        }
-      </FormItem>
-    </Col>
+    <FormItem {...resetProps}>
+      {
+        formItemSwitch({
+          formClassName,
+          rcform: form,
+          ...component,
+        })
+      }
+    </FormItem>
   );
 }
 
@@ -113,24 +141,18 @@ function renderExtraComp(
   }
 
   return (
-    <Col key={key} span={span} offset={offset}>
-      <FormItem {...resetProps}>
-        {
-          component.render({ form, key, formClassName })
-        }
-      </FormItem>
-    </Col>
+    <FormItem {...resetProps}>
+      {
+        component.render({ form, key, formClassName })
+      }
+    </FormItem>
   );
 }
 
 function createFormItem(
-  { formItem, component }:
-    FItemInputProps | FItemTextAreaProps | FItemSearchProps
-    | FItemDatePickerProps | FItemRangePickerProps
-    | FItemSelectProps
-    | FItemExtraProps,
+  { formItem, component }: AllFItemCompsType,
   form: WrappedFormUtils,
-  formClassName: string
+  formClassName: string,
 ): React.ReactNode {
   if (component.type === 'input') {
     return renderNormalComp({ formItem, component }, form, formClassName);

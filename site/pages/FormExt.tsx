@@ -124,8 +124,11 @@ export default class PageFormExt extends PureComponent<{}, {}> {
                 type="primary"
                 onClick={
                   () => {
-                    const vals = this.formB && this.formB.props.form.getFieldsValue();
-                    console.log(vals);
+                    this.formB && this.formB.props.form.validateFieldsAndScroll((err, values) => {
+                      if (!err) {
+                        console.log(values);
+                      }
+                    });
                   }
                 }
               >

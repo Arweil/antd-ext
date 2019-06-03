@@ -1,16 +1,38 @@
 import React from 'react';
-import { DatePicker } from 'antd';
-import { FDatePickerProps, FRangePickerProps } from './types';
+import { CompExtendsProps, CompDecoratorExtendsProps } from './types';
 import { getLayoutElement } from './utils';
+import DatePickerExt from '../BaseComponentExt/DatePickerExt';
+import RangePickerExt from '../BaseComponentExt/RangePickerExt';
+import { DatePicker } from 'antd';
+import { RangePickerProps, DatePickerProps } from 'antd/lib/date-picker/interface';
 
-const { RangePicker } = DatePicker;
+// FDatePicker map component
+export interface FDatePickerMapComponent {
+  datePicker: typeof DatePicker;
+  rangePicker: React.ClassicComponentClass<RangePickerProps>;
+}
+
+// DatePicker
+export interface DatePickerExtendsProps extends CompExtendsProps, DatePickerProps {
+  type: 'datePicker';
+}
+
+export interface FDatePickerProps extends DatePickerExtendsProps, CompDecoratorExtendsProps {
+}
+
+// RangePicker
+export interface RangePickerExtendsProps extends CompExtendsProps, RangePickerProps {
+  type: 'rangePicker';
+}
+
+export interface FRangePickerProps extends RangePickerExtendsProps, CompDecoratorExtendsProps {
+}
 
 function renderDatePicker(props: FDatePickerProps) {
   const { decoratorOpt, rcform, key, formClassName, type, ...restProps } = props;
 
   return rcform.getFieldDecorator(key, decoratorOpt)(
-    <DatePicker
-      style={{ width: '100%' }}
+    <DatePickerExt
       getCalendarContainer={() => getLayoutElement(formClassName)}
       {...restProps}
     />
@@ -21,8 +43,7 @@ function renderRangePicker(props: FRangePickerProps) {
   const { decoratorOpt, rcform, key, formClassName, type, ...restProps } = props;
 
   return rcform.getFieldDecorator(key, decoratorOpt)(
-    <RangePicker
-      style={{ width: '100%' }}
+    <RangePickerExt
       getCalendarContainer={() => getLayoutElement(formClassName)}
       {...restProps}
     />

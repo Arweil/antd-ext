@@ -156,12 +156,15 @@ export default class BatchEditModal extends PureComponent<{}, {
           onClose={this.onClose}
           onAddField={this.onAddField}
           onSearch={this.onSearch}
-          onValidate={this.onValidate}
+          // onValidate={this.onValidate}
         />
 
         <ModalExt
           title="ModalExt"
           visible={true}
+          onOk={async () => {
+            await sleep(2000);
+          }}
         >
           111
         </ModalExt>

@@ -1,15 +1,40 @@
 import React from 'react';
 import { Input } from 'antd';
-import { FInputProps, FSearchProps, FTextAreaProps } from './types';
+import { CompExtendsProps, CompDecoratorExtendsProps } from './types';
+import InputExt from '../BaseComponentExt/InputExt';
+import { InputProps, TextAreaProps, SearchProps } from 'antd/lib/input';
 
 const { Search } = Input;
 const { TextArea } = Input;
 
+// Input
+export interface InputExtendsProps extends CompExtendsProps, InputProps {
+  type: 'input';
+}
+
+export interface FInputProps extends InputExtendsProps, CompDecoratorExtendsProps {
+}
+
+// TextArea
+export interface TextAreaExtendsProps extends CompExtendsProps, TextAreaProps {
+  type: 'textarea'
+}
+
+export interface FTextAreaProps extends TextAreaExtendsProps, CompDecoratorExtendsProps {
+}
+
+// Search
+export interface SearchExtendsProps extends CompExtendsProps, SearchProps {
+  type: 'search'
+}
+
+export interface FSearchProps extends SearchExtendsProps, CompDecoratorExtendsProps {
+}
+
 function renderInput(props: FInputProps) {
   const { decoratorOpt, rcform, key, formClassName, type, ...restProps } = props;
-  restProps.autoComplete = 'off';
   return rcform.getFieldDecorator(key, decoratorOpt)(
-    <Input {...restProps} />
+    <InputExt {...restProps} />
   );
 }
 

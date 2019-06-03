@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
-import { Modal, Button, Form, Row, Col, Input, Icon, Dropdown, Menu } from 'antd';
+import { Modal, Button, Form, Row, Col, Icon, Dropdown, Menu } from 'antd';
 import { ModalProps } from 'antd/lib/modal';
 import _ from 'lodash';
-import mapComponent from './MapComponent';
 import { getLastPromise } from '@/utils/promiseExt';
 import { BatchEditModalProps, BatchEditModalState, FieldConf } from './types';
+import { createFormItem } from '../FormExt/FormItem';
 
 const FormItem = Form.Item;
 const formkeys = 'fieldList';
@@ -41,15 +41,15 @@ class BatchEditModal extends PureComponent<BatchEditModalProps, BatchEditModalSt
       });
 
       if (element) {
-        const fieldList = form.getFieldValue(formkeys);
-        fieldList.push(element);
-
         const { enumItems } = this.state;
+        const fieldList: FieldConf[] = form.getFieldValue(formkeys);
+
         const newEnumItems = _.cloneDeep(enumItems);
-        newEnumItems[key] = await onAddField(element);
+        newEnumItems[key] = (onAddField && await onAddField(element, fieldList)) || undefined;
 
         await this.setStateAsync({ enumItems: newEnumItems });
-
+        
+        fieldList.push(element);
         form.setFieldsValue({
           [formkeys]: fieldList,
         });
@@ -62,27 +62,34 @@ class BatchEditModal extends PureComponent<BatchEditModalProps, BatchEditModalSt
   }
 
   // 验证触发
-  onValidate(element: FieldConf, value: any, callback: any) {
+  async onValidate(element: FieldConf, value: any, callback: any) {
     const { onValidate } = this.props;
     if (onValidate) {
-      onValidate(element, value, callback);
+      await onValidate(element, value, callback);
     } else {
       callback();
     }
   }
 
   // 删除字段
-  onDelete(id: string) {
-    const { form } = this.props;
+  async onDelete(id: string) {
+    const { form, onDelete } = this.props;
     const addedFieldList: FieldConf[] = form.getFieldValue(formkeys);
 
+    // 删除的元素
+    const deleField = addedFieldList.find(element => element.field === id);
+    // 剩余的元素
+    const unDeleFields = addedFieldList.filter(element => element.field !== id);
+
+    deleField && onDelete && await onDelete(deleField, unDeleFields);
+
     form.setFieldsValue({
-      [formkeys]: addedFieldList.filter(element => element.field !== id),
+      [formkeys]: unDeleFields,
     });
   }
 
   // 搜索
-  onSearch = _.debounce(async ({ field, value }: { field: string; value: string }) => {
+  onSearch = _.debounce(async ({ field, value }: { field: string; value: string; }) => {
     try {
       const { onSearch } = this.props;
       const res = onSearch && _getLastPromise.run(async () => {
@@ -101,17 +108,24 @@ class BatchEditModal extends PureComponent<BatchEditModalProps, BatchEditModalSt
   }, 500);
 
   // 保存字段
-  onSave() {
+  async onSave() {
     const { form, onSave } = this.props;
+    await this.setStateAsync({ saving: true });
     form.validateFieldsAndScroll(async (errors, values) => {
       if (errors) {
+        await this.setStateAsync({ saving: false });
         return false;
       }
 
-      const { newVal } = values;
-
-      await onSave(newVal);
-      await form.resetFields();
+      try {
+        const { newVal } = values;
+        await onSave(newVal);
+        await form.resetFields();
+      } catch (ex) {
+        console.warn(ex);
+      } finally {
+        await this.setStateAsync({ saving: false });
+      }
 
       return;
     });
@@ -132,7 +146,7 @@ class BatchEditModal extends PureComponent<BatchEditModalProps, BatchEditModalSt
   }
 
   render() {
-    const { form, visible, fieldConfList, modalProps, compProps } = this.props;
+    const { form, fieldConfList, modalProps } = this.props;
     const { saving, addingField, enumItems } = this.state;
 
     const { getFieldDecorator, getFieldValue } = form;
@@ -153,7 +167,6 @@ class BatchEditModal extends PureComponent<BatchEditModalProps, BatchEditModalSt
       title: "批量修改",
       closable: false,
       width: 700,
-      visible,
       maskClosable: false,
       style: {
         top: 20,
@@ -176,33 +189,25 @@ class BatchEditModal extends PureComponent<BatchEditModalProps, BatchEditModalSt
     return (
       <Modal {...finModalProps}>
         <div>
-          <Form style={{ marginTop: 10 }}>
+          <Form style={{ marginTop: 10 }} className="antd-ext-modal-batch-edit">
             {
               addedFieldList.map((element) => {
-                const { field: key, fieldName, required } = element;
+                const { field: key, fieldName, compProps } = element;
+
                 return (
                   <Row key={key} gutter={20}>
                     <Col span={22}>
-                      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} hasFeedback label={fieldName}>
-                        {getFieldDecorator(`newVal[${key}]`, {
-                          rules: [{
-                            required,
-                            message: '必填',
-                          }, {
-                            validator: async (rule, value, callback) => {
-                              this.onValidate(element, value, callback);
-                            }
-                          }],
-                        })(mapComponent({
-                          key,
+                      {
+                        createFormItem(
                           compProps,
-                          fieldConfList: addedFieldList,
-                          enumItems,
-                          onSearch: this.onSearch,
-                        }))}
-                      </FormItem>
+                          form,
+                          'antd-ext-modal-batch-edit'
+                        )
+                      }
                     </Col>
                     <Col span={2}>
+                      {/* 
+                      // @ts-ignore */}
                       <Button
                         type="danger"
                         icon="delete"
@@ -227,13 +232,15 @@ class BatchEditModal extends PureComponent<BatchEditModalProps, BatchEditModalSt
                             <Menu onClick={this.onAdd}>
                               {
                                 filteredFieldConfList.map((item) => {
-                                  return <Menu.Item key={item.field}>{item.fieldName}</Menu.Item>;
+                                  return <Menu.Item key={item.field} disabled={!!item.disabled}>{item.fieldName}</Menu.Item>;
                                 })
                               }
                             </Menu>
                           )
                         }
                       >
+                        {/* 
+                        // @ts-ignore */}
                         <Button loading={addingField}>
                           添加字段
                           <Icon type="down" />
