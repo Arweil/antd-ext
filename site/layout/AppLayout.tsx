@@ -54,7 +54,7 @@ export default class AppLayout extends PureComponent<{}, IAppLayoutState> {
                 <Link to="/FormExt">FormExt</Link>
               </Menu.Item>
               <Menu.Item key="B">
-                <Link to="/BatchEditModal">BatchEditModal</Link>
+                <Link to="/DynamicFormFields">DynamicFormFields</Link>
               </Menu.Item>
               <Menu.Item key="C">
                 <Link to="/TableExt">TableExt</Link>

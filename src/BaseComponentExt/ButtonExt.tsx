@@ -10,6 +10,8 @@ export interface ButtonExtProps extends ButtonProps {
 export default class ButtonExt extends PureComponent<ButtonExtProps, {
   fetching: boolean;
 }> {
+  private isClick: boolean;
+
   constructor(props: Readonly<ButtonExtProps>) {
     super(props);
 
@@ -17,10 +19,18 @@ export default class ButtonExt extends PureComponent<ButtonExtProps, {
       fetching: false,
     };
 
+    this.isClick = false; // 防止重复点击
+
     this.onClick = this.onClick.bind(this);
   }
 
   async onClick(event: React.MouseEvent<any, MouseEvent>) {
+    if (this.isClick) {
+      return;
+    }
+
+    this.isClick = true;
+
     const { isAsyncClick, onClick } = this.props;
     if (!onClick) {
       return; 
@@ -34,6 +44,8 @@ export default class ButtonExt extends PureComponent<ButtonExtProps, {
     } else {
       onClick(event);
     }
+
+    this.isClick = false;
   }
 
   render() {

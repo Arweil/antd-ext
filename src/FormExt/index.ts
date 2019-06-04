@@ -1,8 +1,18 @@
 import './style';
 import FormExt, { FormScope } from './FormExt';
+import { FormComponentProps } from 'antd/lib/form';
 
 // 表单验证
-export async function checkForm(formInstanceList: FormScope[]) {
+export async function checkForm<
+  T extends { [key: string]: string | undefined | number },
+  FormInstance extends React.Component<FormComponentProps>
+>(formInstanceList: FormInstance[]): Promise<{
+  success: true;
+  values: T
+} | {
+  success: false;
+  msg: string;
+}> {
   if (Object.prototype.toString.call(formInstanceList) !== '[object Array]') {
     return {
       success: false,
@@ -10,7 +20,7 @@ export async function checkForm(formInstanceList: FormScope[]) {
     };
   }
 
-  const promiseNeedCheckedList = formInstanceList.map((formInstance) => {
+  const promiseNeedCheckedList: Promise<T>[] = formInstanceList.map((formInstance) => {
     return new Promise((resolve, reject) => {
       formInstance.props.form.validateFields((errors, values) => {
         // 如果没有错误

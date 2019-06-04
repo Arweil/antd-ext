@@ -18,8 +18,8 @@ const TestA = Loadable({
   loading: LoadingComponent,
 });
 
-const BatchEditModal = Loadable({
-  loader: () => import('@site/pages/BatchEditModal'),
+const DynamicFormFields = Loadable({
+  loader: () => import('@site/pages/DynamicFormFields'),
   loading: LoadingComponent,
 });
 
@@ -33,7 +33,7 @@ function RoutesConf() {
     <Switch>
       <Route exact path="/FormExt" component={FormExt} />
       <Route exact path="/TestA" component={TestA} />
-      <Route exact path="/BatchEditModal" component={BatchEditModal} />
+      <Route exact path="/DynamicFormFields" component={DynamicFormFields} />
       <Route exact path="/TableExt" component={TableExt} />
     </Switch>
   );

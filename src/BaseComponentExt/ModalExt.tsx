@@ -10,6 +10,8 @@ export interface ModalExtProps extends ModalProps {
 export default class ModalExt extends PureComponent<ModalExtProps, {
   fetching: boolean;
 }> {
+  private isClick: boolean;
+
   constructor(props: Readonly<ModalExtProps>) {
     super(props);
 
@@ -17,10 +19,17 @@ export default class ModalExt extends PureComponent<ModalExtProps, {
       fetching: false,
     };
 
+    this.isClick = false; // 防止重复点击
+
     this.onOk = this.onOk.bind(this);
   }
 
   async onOk(e: React.MouseEvent<any>) {
+    if (this.isClick) {
+      return;
+    }
+
+    this.isClick = true;
     const { onOk } = this.props;
     if (!onOk) {
       return;
@@ -35,6 +44,7 @@ export default class ModalExt extends PureComponent<ModalExtProps, {
     await setStateAsync(this, {
       fetching: true,
     });
+    this.isClick = false;
   }
 
   render() {
