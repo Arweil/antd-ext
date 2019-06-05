@@ -3,8 +3,8 @@ import { Form, Row, Col, Dropdown, Icon, Menu } from 'antd';
 import _ from 'lodash';
 import { WrappedFormUtils } from 'antd/lib/form/Form';
 import { setStateAsync } from '@/utils/reactExt';
-import { AllFItemCompsType, createFormItem } from '@/FormExt/FormItem';
-import ButtonExt from '@/BaseComponentExt/ButtonExt';
+import { AllFItemCompsType, createFormItem } from '../FormExt/FormItem';
+import ButtonExt from '../BaseComponentExt/ButtonExt';
 
 const FormItem = Form.Item;
 export const formkeys = 'fieldList';
@@ -16,13 +16,13 @@ export interface FieldConf {
 }
 
 export interface AddedField extends FieldConf {
-  compProps?: AllFItemCompsType;
+  compConf: AllFItemCompsType;
 }
 
 export interface DynamicFormFieldsProps {
   form: WrappedFormUtils;
   fieldConfList: FieldConf[];
-  onAddField?: (addField: AddedField, addedFields: AddedField[]) => Promise<AllFItemCompsType>;
+  onAddField?: (addField: FieldConf, addedFields: AddedField[]) => Promise<AllFItemCompsType>;
   onDelete?: (deleField: AddedField, unDeleFields: AddedField[]) => void | Promise<void>;
 }
 
@@ -56,11 +56,11 @@ class DynamicFormFields extends PureComponent<DynamicFormFieldsProps, DynamicFor
       if (element) {
         const fieldList: AddedField[] = form.getFieldValue(formkeys);
 
-        const compProps = onAddField && await onAddField(element, fieldList);
+        const compConf = onAddField && await onAddField(element, fieldList);
 
-        fieldList.push({
+        compConf && fieldList.push({
           ...element,
-          compProps,
+          compConf,
         });
         form.setFieldsValue({
           [formkeys]: fieldList,
@@ -113,22 +113,20 @@ class DynamicFormFields extends PureComponent<DynamicFormFieldsProps, DynamicFor
         <Row gutter={20}>
           {
             addedFieldList.map((element) => {
-              const { field, compProps } = element;
+              const { field, compConf } = element;
 
-              if (!compProps) {
+              if (!compConf) {
                 return null;
               }
 
-              console.log(compProps);
-
-              const { formItem, component } = compProps;
+              const { formItem, component } = compConf;
               const { offset, span = 24 } = formItem;
               const { key } = component;
 
               return (
                 <Col key={key} span={span} offset={offset}>
                   <Col span={22}>
-                    {createFormItem(compProps, form, 'antd-ext-modal-batch-edit')}
+                    {createFormItem(compConf, form, 'antd-ext-modal-batch-edit')}
                   </Col>
                   <Col span={2}>
                     {/* 

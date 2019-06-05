@@ -42,7 +42,7 @@ export default class ModalExt extends PureComponent<ModalExtProps, {
     await onOk(e);
 
     await setStateAsync(this, {
-      fetching: true,
+      fetching: false,
     });
     this.isClick = false;
   }

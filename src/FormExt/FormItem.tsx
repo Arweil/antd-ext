@@ -1,18 +1,18 @@
 import React from 'react';
 import { Form } from 'antd';
-import { WrappedFormUtils } from 'antd/lib/form/Form';
+import { WrappedFormUtils, GetFieldDecoratorOptions } from 'antd/lib/form/Form';
 import {
-  BaseFormItemProps,
+  BaseFormItemProps, CompExtendsProps,
 } from "./types";
 
 import FSelect, { SelectExtendsProps, FSelectProps } from './FSelect';
 import FInput, { InputExtendsProps, TextAreaExtendsProps, SearchExtendsProps, FInputProps, FSearchProps, FTextAreaProps } from './FInput';
 import FDatePicker, { DatePickerExtendsProps, RangePickerExtendsProps, FDatePickerProps, FRangePickerProps } from './FDatePicker';
 
-export interface ExtraExtendsProps {
+export interface ExtraExtendsProps extends CompExtendsProps {
   type: 'extra',
-  key: string,
-  render: ({ form, key, formClassName }: { form: WrappedFormUtils, key: string, formClassName: string }) => React.ReactNode;
+  compProps?: any,
+  render: (params: { form: WrappedFormUtils; key: string; formClassName: string; decoratorOpt?: GetFieldDecoratorOptions; compProps?: any; }) => React.ReactNode;
 };
 
 export interface FItemInputProps extends BaseFormItemProps {
@@ -128,7 +128,7 @@ function renderExtraComp(
   formClassName: string
 ) {
   const { offset, span = 8, noFormItemLayout, ...resetProps } = formItem;
-  const { key } = component;
+  const { key, decoratorOpt, compProps } = component;
 
   // FormItem 属性
   if (!noFormItemLayout) {
@@ -143,7 +143,7 @@ function renderExtraComp(
   return (
     <FormItem {...resetProps}>
       {
-        component.render({ form, key, formClassName })
+        component.render({ form, key, formClassName, decoratorOpt, compProps })
       }
     </FormItem>
   );
