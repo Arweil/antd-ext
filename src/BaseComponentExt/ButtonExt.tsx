@@ -33,14 +33,19 @@ export default class ButtonExt extends PureComponent<ButtonExtProps, {
 
     const { isAsyncClick, onClick } = this.props;
     if (!onClick) {
-      return; 
+      return;
     }
 
     // 如果标记异步，那么自动加入loading
     if (isAsyncClick) {
-      await setStateAsync(this, { fetching: true });
-      await onClick(event);
-      await setStateAsync(this, { fetching: false });
+      try {
+        await setStateAsync(this, { fetching: true });
+        await onClick(event);
+      } catch (ex) {
+        console.warn(ex);
+      } finally {
+        await setStateAsync(this, { fetching: false });
+      }
     } else {
       onClick(event);
     }

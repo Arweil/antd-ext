@@ -35,15 +35,20 @@ export default class ModalExt extends PureComponent<ModalExtProps, {
       return;
     }
 
-    await setStateAsync(this, {
-      fetching: true,
-    });
+    try {
+      await setStateAsync(this, {
+        fetching: true,
+      });
 
-    await onOk(e);
+      await onOk(e);
+    } catch (ex) {
+      console.warn(ex);
+    } finally {
+      await setStateAsync(this, {
+        fetching: false,
+      });
+    }
 
-    await setStateAsync(this, {
-      fetching: false,
-    });
     this.isClick = false;
   }
 
@@ -65,7 +70,9 @@ export default class ModalExt extends PureComponent<ModalExtProps, {
         okButtonProps={{
           loading: fetching,
         }}
-        cancelButtonDisabled={fetching}
+        cancelButtonProps={{
+          disabled: fetching,
+        }}
         onOk={onOk ? this.onOk : undefined}
         {...restProps}
       >
