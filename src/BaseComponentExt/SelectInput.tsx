@@ -90,6 +90,7 @@ export default class SelectInput<
 
   render() {
     const { selectProps, inputProps, showSelect, showInput } = this.props;
+    const { selectValue, inputValue } = this.state;
 
     const _showSelect = showSelect === undefined || showSelect;
     const _showInput = showInput === undefined || showInput;
@@ -101,6 +102,7 @@ export default class SelectInput<
             <SelectExt<SelectValueType>
               style={{ width: _showInput ? '50%' : '100%' }}
               optionAll={false}
+              value={selectValue}
               {...selectProps}
               onChange={this.onSelectChange}
             />
@@ -110,6 +112,7 @@ export default class SelectInput<
           _showInput ? (
             <InputExt
               style={{ width: _showSelect ? '50%' : '100%' }}
+              value={inputValue}
               {...inputProps}
               onChange={this.onInputChange}
             />

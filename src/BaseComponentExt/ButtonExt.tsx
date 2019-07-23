@@ -4,7 +4,7 @@ import { ButtonProps } from 'antd/lib/button';
 import { setStateAsync } from '@/utils/reactExt';
 
 export interface ButtonExtProps extends ButtonProps {
-  isAsyncClick: boolean;
+  isAsyncClick?: boolean;
 }
 
 export default class ButtonExt extends PureComponent<ButtonExtProps, {
@@ -33,7 +33,7 @@ export default class ButtonExt extends PureComponent<ButtonExtProps, {
 
     const { isAsyncClick, onClick } = this.props;
     if (!onClick) {
-      return;
+      return; 
     }
 
     // 如果标记异步，那么自动加入loading
@@ -54,7 +54,7 @@ export default class ButtonExt extends PureComponent<ButtonExtProps, {
   }
 
   render() {
-    const { isAsyncClick, onClick, loading, ...restProps } = this.props;
+    const { onClick, loading, ...restProps } = this.props;
     const { fetching } = this.state;
     return (
       <Button

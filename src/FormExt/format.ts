@@ -17,7 +17,8 @@ function checkRangeDateType<T>(params: any): params is T {
  */
 export const formatSearchDate = <T extends { [key: string]: any }>(
   searchResult: T,
-  map: { [P in keyof T]: [string, string] }
+  map: { [P in keyof T]: [string, string] },
+  formatStr: [string, string] = ['YYYY-MM-DD', 'YYYY-MM-DD'],
 ) => {
   let result: { [key: string]: any } = {};
 
@@ -28,8 +29,8 @@ export const formatSearchDate = <T extends { [key: string]: any }>(
     if (checkRangeDateType<[moment.Moment, moment.Moment]>(searchResult[mapKey])) {
       const [startDate, endDate] = searchResult[mapKey];
 
-      result[fieldStart] = startDate.format('YYYY-MM-DD');
-      result[fieldEnd] = endDate.format('YYYY-MM-DD');
+      result[fieldStart] = startDate.format(formatStr[0]);
+      result[fieldEnd] = endDate.format(formatStr[1]);
     } else {
       result[fieldStart] = undefined;
       result[fieldEnd] = undefined;

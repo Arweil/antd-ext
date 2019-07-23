@@ -90,6 +90,7 @@ export default class SelectSelect<
 
   render() {
     const { selectPropsBefore, selectPropsAfter, showSelectBefore, showSelectAfter } = this.props;
+    const { selectValueBefore, selectValueAfter } = this.state;
 
     const _showSelectBefore = showSelectBefore === undefined || showSelectBefore;
     const _showSelectAfter = showSelectAfter === undefined || showSelectAfter;
@@ -101,6 +102,7 @@ export default class SelectSelect<
             <SelectExt<SelectValueBeforeType>
               style={{ width: _showSelectAfter ? '50%' : '100%' }}
               optionAll={false}
+              value={selectValueBefore}
               {...selectPropsBefore}
               onChange={this.onSelectBeforeChange}
             />
@@ -111,6 +113,7 @@ export default class SelectSelect<
             <SelectExt<SelectValueAfterType>
               style={{ width: _showSelectBefore ? '50%' : '100%' }}
               optionAll={false}
+              value={selectValueAfter}
               {...selectPropsAfter}
               onChange={this.onSelectAfterChange}
             />

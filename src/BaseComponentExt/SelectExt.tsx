@@ -37,7 +37,7 @@ export default class SelectExt<T = SelectValue> extends PureComponent<SelectExte
       optionFilterProp = 'children',
       filterOption = onFilterOption,
       ...restProps
-    } = this.props;  
+    } = this.props;
 
     return (
       // @ts-ignore

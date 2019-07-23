@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
-import { Modal } from 'antd';
+import { Modal, Spin } from 'antd';
 import { ModalProps } from 'antd/lib/modal';
 import { setStateAsync } from '@/utils/reactExt';
 
-
 export interface ModalExtProps extends ModalProps {
+  isLoading?: boolean;
 }
 
 export default class ModalExt extends PureComponent<ModalExtProps, {
@@ -48,12 +48,12 @@ export default class ModalExt extends PureComponent<ModalExtProps, {
         fetching: false,
       });
     }
-
+    
     this.isClick = false;
   }
 
   render() {
-    const { onOk, ...restProps } = this.props;
+    const { onOk, isLoading, ...restProps } = this.props;
     const { fetching } = this.state;
 
     return (
@@ -76,7 +76,13 @@ export default class ModalExt extends PureComponent<ModalExtProps, {
         onOk={onOk ? this.onOk : undefined}
         {...restProps}
       >
-        {this.props.children}
+        {
+          isLoading === undefined ? this.props.children : (
+            <Spin spinning={isLoading}>
+              {this.props.children}
+            </Spin>
+          )
+        }
       </Modal>
     )
   }

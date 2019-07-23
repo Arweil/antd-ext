@@ -1,4 +1,4 @@
-import { WrappedFormUtils, GetFieldDecoratorOptions, FormProps } from 'antd/lib/form/Form';
+import { WrappedFormUtils, GetFieldDecoratorOptions, FormProps, FormComponentProps } from 'antd/lib/form/Form';
 import { FormItemProps as AntdFormItemProps } from 'antd/lib/form/FormItem';
 import { ColProps } from 'antd/lib/col';
 import { FItemInputProps, FItemTextAreaProps, FItemSearchProps, FItemSelectProps, FItemDatePickerProps, FItemRangePickerProps, FItemExtraProps } from './FormItem';
@@ -22,13 +22,13 @@ export type FItemCompsType =
   | FItemExtraProps;
 
 // FormExt props
-export interface FormScopeProps extends FormProps {
+export interface FormScopeProps extends FormProps, FormComponentProps {
   gutter?: number | object;
   formItemList: Array<FItemCompsType>;
   className?: string;
   needBtnGroup?: boolean;
   btnSpan?: number;
-  form: WrappedFormUtils,
+  form: WrappedFormUtils;
   onSearch?: (values: FormValues) => void;
   onReset?: () => void;
 }
@@ -36,6 +36,7 @@ export interface FormScopeProps extends FormProps {
 // 表单项类型
 interface FormItemProps extends AntdFormItemProps, ColProps {
   noFormItemLayout?: boolean;
+  hidden?: boolean;
 }
 
 export interface CompExtendsProps {

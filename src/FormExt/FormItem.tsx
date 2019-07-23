@@ -9,6 +9,8 @@ import FSelect, { SelectExtendsProps, FSelectProps } from './FSelect';
 import FInput, { InputExtendsProps, TextAreaExtendsProps, SearchExtendsProps, FInputProps, FSearchProps, FTextAreaProps } from './FInput';
 import FDatePicker, { DatePickerExtendsProps, RangePickerExtendsProps, FDatePickerProps, FRangePickerProps } from './FDatePicker';
 
+type typeLayout = "inline" | "horizontal" | "vertical";
+
 export interface ExtraExtendsProps extends CompExtendsProps {
   type: 'extra',
   compProps?: any,
@@ -83,7 +85,8 @@ function formItemSwitch(args: NormalCompsType) {
 function renderNormalComp(
   { formItem, component }: NormalFItemCompsType,
   form: WrappedFormUtils,
-  formClassName: string
+  formClassName: string,
+  layout?: typeLayout,
 ) {
   const {
     offset,
@@ -95,8 +98,10 @@ function renderNormalComp(
 
   // FormItem 属性
   if (!noFormItemLayout) {
-    resetProps.labelCol = resetProps.labelCol || defaultFormItemLayout.labelCol;
-    resetProps.wrapperCol = resetProps.wrapperCol || defaultFormItemLayout.wrapperCol;
+    if (layout !== 'inline') {
+      resetProps.labelCol = resetProps.labelCol || defaultFormItemLayout.labelCol;
+      resetProps.wrapperCol = resetProps.wrapperCol || defaultFormItemLayout.wrapperCol;
+    }
   } else {
     resetProps.className += ' antd-ext-form-item-flex';
     resetProps.labelCol = undefined;
@@ -125,15 +130,18 @@ function renderNormalComp(
 function renderExtraComp(
   { formItem, component }: FItemExtraProps,
   form: WrappedFormUtils,
-  formClassName: string
+  formClassName: string,
+  layout?: typeLayout,
 ) {
   const { offset, span = 8, noFormItemLayout, ...resetProps } = formItem;
   const { key, decoratorOpt, compProps } = component;
 
   // FormItem 属性
   if (!noFormItemLayout) {
-    resetProps.labelCol = resetProps.labelCol || defaultFormItemLayout.labelCol;
-    resetProps.wrapperCol = resetProps.wrapperCol || defaultFormItemLayout.wrapperCol;
+    if (layout !== 'inline') {
+      resetProps.labelCol = resetProps.labelCol || defaultFormItemLayout.labelCol;
+      resetProps.wrapperCol = resetProps.wrapperCol || defaultFormItemLayout.wrapperCol;
+    }
   } else {
     resetProps.className += ' antd-ext-form-item-flex';
     resetProps.labelCol = undefined;
@@ -153,33 +161,34 @@ function createFormItem(
   { formItem, component }: AllFItemCompsType,
   form: WrappedFormUtils,
   formClassName: string,
+  layout?: typeLayout,
 ): React.ReactNode {
   if (component.type === 'input') {
-    return renderNormalComp({ formItem, component }, form, formClassName);
+    return renderNormalComp({ formItem, component }, form, formClassName, layout);
   }
 
   if (component.type === 'search') {
-    return renderNormalComp({ formItem, component }, form, formClassName);
+    return renderNormalComp({ formItem, component }, form, formClassName, layout);
   }
 
   if (component.type === 'textarea') {
-    return renderNormalComp({ formItem, component }, form, formClassName);
+    return renderNormalComp({ formItem, component }, form, formClassName, layout);
   }
 
   if (component.type === 'select') {
-    return renderNormalComp({ formItem, component }, form, formClassName);
+    return renderNormalComp({ formItem, component }, form, formClassName, layout);
   }
   
   if (component.type === 'datePicker') {
-    return renderNormalComp({ formItem, component }, form, formClassName);
+    return renderNormalComp({ formItem, component }, form, formClassName, layout);
   }
 
   if (component.type === 'rangePicker') {
-    return renderNormalComp({ formItem, component }, form, formClassName);
+    return renderNormalComp({ formItem, component }, form, formClassName, layout);
   }
 
   if (component.type === 'extra') {
-    return renderExtraComp({ formItem, component }, form, formClassName);
+    return renderExtraComp({ formItem, component }, form, formClassName, layout);
   }
 
   return () => null;

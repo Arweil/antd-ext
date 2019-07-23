@@ -35,7 +35,7 @@ class FormScope extends PureComponent<FormScopeProps, FormScopeState> {
     );
   }
 
-  onSearch(e: FormEvent<Button>) {
+  onSearch(e: FormEvent<HTMLElement>) {
     e.preventDefault();
     this.setState(
       {
@@ -73,12 +73,15 @@ class FormScope extends PureComponent<FormScopeProps, FormScopeState> {
         <Row gutter={gutter}>
           {formItemList.map((formItemProps) => {
             const { formItem, component } = formItemProps;
-            const { offset, span = 8 } = formItem;
+            const { offset, span = 8, hidden = false, } = formItem;
             const { key } = component;
+
+            // 如果设置hidden 那么不渲染此项
+            if (hidden) return null;
 
             return (
               <Col key={key} span={span} offset={offset}>
-                {createFormItem(formItemProps, form, className)}
+                {createFormItem(formItemProps, form, className, resetProps.layout)}
               </Col>
             );
           })}
@@ -106,6 +109,6 @@ class FormScope extends PureComponent<FormScopeProps, FormScopeState> {
 
 export { FormScope };
 
-const FormScopeWrapper = Form.create()(FormScope);
+const FormScopeWrapper = Form.create<FormScopeProps>()(FormScope);
 
 export default FormScopeWrapper;
