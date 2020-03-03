@@ -26,7 +26,12 @@ const DynamicFormFields = Loadable({
 const TableExt = Loadable({
   loader: () => import('@site/pages/TableExt'),
   loading: LoadingComponent,
-})
+});
+
+const Viewer = Loadable({
+  loader: () => import('@site/pages/Viewer'),
+  loading: LoadingComponent,
+});
 
 function RoutesConf() {
   return (
@@ -35,6 +40,7 @@ function RoutesConf() {
       <Route exact path="/TestA" component={TestA} />
       <Route exact path="/DynamicFormFields" component={DynamicFormFields} />
       <Route exact path="/TableExt" component={TableExt} />
+      <Route exact path="/Viewer" component={Viewer} />
     </Switch>
   );
 }

@@ -12,7 +12,8 @@
   "dependencies": {
     "antd": "3.19.8",
     "lodash": "^4.17.11",
-    "styled-components": "^4.1.3"
+    "styled-components": "^4.1.3",
+    "viewerjs": "^1.3.7"
   },
   "devDependencies": {
     "@babel/core": "^7.1.5",

@@ -4,6 +4,7 @@ import { Layout, Menu, Icon } from 'antd';
 import RoutesConf from '@site/routes/RoutesConf';
 
 import './style.scss';
+import 'viewerjs/dist/viewer.css';
 
 const { Header, Content, Sider } = Layout;
 const { SubMenu } = Menu;
@@ -61,6 +62,9 @@ export default class AppLayout extends PureComponent<{}, IAppLayoutState> {
               </Menu.Item>
               <Menu.Item key="D">
                 <Link to="/TestA">Test A</Link>
+              </Menu.Item>
+              <Menu.Item key="E">
+                <Link to="/Viewer">Viewer</Link>
               </Menu.Item>
             </SubMenu>
           </Menu>

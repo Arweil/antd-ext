@@ -1,0 +1,14 @@
+.viewer-list {
+  > li {
+    color: transparent;
+    cursor: pointer;
+    float: left;
+    font-size: 0;
+    height: 50px;
+    line-height: 0;
+    opacity: 0.5;
+    overflow: hidden;
+    transition: opacity 0.15s;
+    width: 30px;
+  }
+}
