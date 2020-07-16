@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "antd": "3.19.8",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "styled-components": "^4.1.3",
     "viewerjs": "^1.3.7"
   },
