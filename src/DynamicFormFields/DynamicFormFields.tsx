@@ -109,7 +109,7 @@ class DynamicFormFields extends PureComponent<DynamicFormFieldsProps, DynamicFor
     });
 
     return (
-      <Form style={{ marginTop: 10 }} className="antd-ext-modal-batch-edit">
+      <Form style={{ marginTop: 10 }} id="antd-ext-modal-batch-edit">
         <Row gutter={20}>
           {
             addedFieldList.map((element) => {
@@ -126,7 +126,7 @@ class DynamicFormFields extends PureComponent<DynamicFormFieldsProps, DynamicFor
               return (
                 <Col key={key} span={span} offset={offset}>
                   <Col span={22}>
-                    {createFormItem(compConf, form, 'antd-ext-modal-batch-edit')}
+                    {createFormItem(compConf, form, 'antd-ext-modal-batch-edit', false)}
                   </Col>
                   <Col span={2}>
                     {/*

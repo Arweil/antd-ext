@@ -5,15 +5,18 @@
   "main": "index.js",
   "scripts": {
     "dev": "jaraxxus start",
-    "build": "jaraxxus build"
+    "build": "gulp build",
+    "publish": "npm publish ./lib",
+    "clean": "gulp clean"
   },
   "author": "Milk",
   "license": "ISC",
   "dependencies": {
-    "antd": "3.19.8",
-    "lodash": "^4.17.11",
-    "styled-components": "^4.1.3",
-    "viewerjs": "^1.3.7"
+    "antd": "^3.19.8",
+    "lodash": "^4.17.19",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
+    "styled-components": "^4.1.3"
   },
   "devDependencies": {
     "@babel/core": "^7.1.5",
@@ -36,6 +39,7 @@
     "autoprefixer": "^9.1.1",
     "babel-eslint": "8.2.6",
     "babel-plugin-import": "^1.11.0",
+    "chalk": "^4.1.0",
     "eslint": "^5.4.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-airbnb-typescript": "^4.0.0",
@@ -43,15 +47,20 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-react": "^7.12.2",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^8.0.0",
+    "gulp-clean": "^0.4.0",
+    "gulp-plumber": "^1.2.1",
+    "gulp-typescript": "^6.0.0-alpha.1",
     "history": "^4.9.0",
     "jaraxxus": "^1.0.1",
+    "merge2": "^1.4.1",
     "prop-types": "^15.7.2",
-    "react": "^16.7.0",
-    "react-dom": "^16.7.0",
     "react-hot-loader": "^4.6.3",
     "react-loadable": "^5.5.0",
     "react-router": "^4.0.0",
     "react-router-dom": "^4.0.0",
+    "tslint": "^6.1.2",
     "typescript": ">=3.2.1 <3.4.0"
   }
 }

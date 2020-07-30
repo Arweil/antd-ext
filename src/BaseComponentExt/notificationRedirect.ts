@@ -12,7 +12,7 @@ export function notificationRedirect(params: NotificationRedirectProps): void {
   let timer = 0;
 
   // 清除计时器
-  function goToDeskWrapper(): void {
+  function nextStep(): void {
     if (timer) {
       clearTimeout(timer);
     }
@@ -20,18 +20,17 @@ export function notificationRedirect(params: NotificationRedirectProps): void {
     goFun();
   }
 
-  timer = setTimeout(() => {
+  timer = notificationProps.duration !== null ? setTimeout(() => {
     notification.close(key);
-    goToDeskWrapper();
-  }, notificationProps.duration);
+    nextStep();
+  }, notificationProps.duration) : 0;
 
   notification.open({
     key,
-    duration: 0,
     ...notificationProps,
     onClick: () => {
       notificationProps.onClick && notificationProps.onClick();
-      goToDeskWrapper();
+      nextStep();
     },
   });
 }

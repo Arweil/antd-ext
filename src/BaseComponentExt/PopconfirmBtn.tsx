@@ -48,7 +48,7 @@ export default class PopconfirmBtn extends PureComponent<PopconfirmBtnProps, Pop
 
   render(): JSX.Element {
     const { children, onConfirm, btnProps, ...restProps } = this.props;
-    const { onClick, loading, ...restBtnProps } = btnProps || {};
+    const { onClick, loading, ...restBtnProps } = btnProps as ButtonProps;
     const { fetching } = this.state;
     return (
       <Popconfirm {...restProps} onConfirm={onConfirm ? this.onConfirm : undefined}>
