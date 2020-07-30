@@ -155,7 +155,8 @@ const reactEslintConfig = {
     1,
     {
       "extensions": [
-        ".jsx"
+        ".jsx",
+        ".tsx"
       ]
     }
   ],

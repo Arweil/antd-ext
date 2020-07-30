@@ -57,14 +57,6 @@ export default class AppLayout extends PureComponent<{}, IAppLayoutState> {
               <Menu.Item key="B">
                 <Link to="/DynamicFormFields">DynamicFormFields</Link>
               </Menu.Item>
-              <Menu.Item key="C">
-                <Link to="/TableExt">TableExt</Link>
-              </Menu.Item>
-              <Menu.Item key="D">
-                <Link to="/TestA">Test A</Link>
-              </Menu.Item>
-              <Menu.Item key="E">
-                <Link to="/Viewer">Viewer</Link>
               </Menu.Item>
             </SubMenu>
           </Menu>

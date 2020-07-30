@@ -1,52 +1,27 @@
 import React from 'react';
 import { Input } from 'antd';
-import { CompExtendsProps, CompDecoratorExtendsProps } from './types';
 import InputExt from '../BaseComponentExt/InputExt';
-import { InputProps, TextAreaProps, SearchProps } from 'antd/lib/input';
+import { FInputProps, FSearchProps, FTextAreaProps } from './types';
 
 const { Search } = Input;
 const { TextArea } = Input;
 
-// Input
-export interface InputExtendsProps extends CompExtendsProps, InputProps {
-  type: 'input';
-}
-
-export interface FInputProps extends InputExtendsProps, CompDecoratorExtendsProps {
-}
-
-// TextArea
-export interface TextAreaExtendsProps extends CompExtendsProps, TextAreaProps {
-  type: 'textarea'
-}
-
-export interface FTextAreaProps extends TextAreaExtendsProps, CompDecoratorExtendsProps {
-}
-
-// Search
-export interface SearchExtendsProps extends CompExtendsProps, SearchProps {
-  type: 'search'
-}
-
-export interface FSearchProps extends SearchExtendsProps, CompDecoratorExtendsProps {
-}
-
-function renderInput(props: FInputProps) {
-  const { decoratorOpt, rcform, key, formClassName, type, ...restProps } = props;
+function renderInput(props: FInputProps): React.ReactNode {
+  const { decoratorOpt, rcform, key, formId, autoGetContainer, type, ...restProps } = props;
   return rcform.getFieldDecorator(key, decoratorOpt)(
     <InputExt {...restProps} />
   );
 }
 
-function renderSearch(props: FSearchProps) {
-  const { decoratorOpt, rcform, key, formClassName, type, ...restProps } = props;
+function renderSearch(props: FSearchProps): React.ReactNode {
+  const { decoratorOpt, rcform, key, formId, autoGetContainer, type, ...restProps } = props;
   return rcform.getFieldDecorator(key, decoratorOpt)(
     <Search {...restProps} />
   );
 }
 
-function renderTextArea(props: FTextAreaProps) {
-  const { decoratorOpt, rcform, key, formClassName, type, ...restProps } = props;
+function renderTextArea(props: FTextAreaProps): React.ReactNode {
+  const { decoratorOpt, rcform, key, formId, autoGetContainer, type, ...restProps } = props;
   return rcform.getFieldDecorator(key, decoratorOpt)(
     <TextArea {...restProps} />
   );
@@ -66,5 +41,5 @@ export default function FInput(props: FInputProps | FSearchProps | FTextAreaProp
     return renderTextArea(props);
   }
 
-  return () => null;
-};
+  return (): React.ReactNode => null;
+}

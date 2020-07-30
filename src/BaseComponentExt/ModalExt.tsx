@@ -7,6 +7,14 @@ export interface ModalExtProps extends ModalProps {
   isLoading?: boolean;
 }
 
+export const enumZIndex = {
+  levelBasement1: 900,
+  default: 1000,
+  level1: 1100,
+  level2: 1200,
+  level3: 1300,
+};
+
 export default class ModalExt extends PureComponent<ModalExtProps, {
   fetching: boolean;
 }> {
@@ -24,7 +32,7 @@ export default class ModalExt extends PureComponent<ModalExtProps, {
     this.onOk = this.onOk.bind(this);
   }
 
-  async onOk(e: React.MouseEvent<any>) {
+  async onOk(e: React.MouseEvent<any>): Promise<void> {
     if (this.isClick) {
       return;
     }
@@ -48,12 +56,12 @@ export default class ModalExt extends PureComponent<ModalExtProps, {
         fetching: false,
       });
     }
-    
+
     this.isClick = false;
   }
 
-  render() {
-    const { onOk, isLoading, ...restProps } = this.props;
+  render(): JSX.Element {
+    const { onOk, isLoading, okButtonProps, cancelButtonProps, ...restProps } = this.props;
     const { fetching } = this.state;
 
     return (
@@ -65,26 +73,27 @@ export default class ModalExt extends PureComponent<ModalExtProps, {
         }}
         bodyStyle={{
           overflowY: 'scroll',
-          maxHeight: window.innerHeight - 150,
+          maxHeight: window.innerHeight - 160,
         }}
         okButtonProps={{
           loading: fetching,
+          ...okButtonProps,
         }}
         cancelButtonProps={{
           disabled: fetching,
+          ...cancelButtonProps,
         }}
         onOk={onOk ? this.onOk : undefined}
         {...restProps}
       >
         {
-          isLoading === undefined ? this.props.children : (
+          isLoading === undefined ? restProps.children : (
             <Spin spinning={isLoading}>
-              {this.props.children}
+              {restProps.children}
             </Spin>
           )
         }
       </Modal>
-    )
+    );
   }
 }
-

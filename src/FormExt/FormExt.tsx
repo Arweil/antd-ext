@@ -1,5 +1,6 @@
 import React, { PureComponent, FormEvent } from 'react';
 import { Form, Row, Col, Button } from 'antd';
+import { getRandomId } from '@/utils/utils';
 
 import {
   FormScopeState,
@@ -9,6 +10,8 @@ import {
 import { createFormItem } from './FormItem';
 
 class FormScope extends PureComponent<FormScopeProps, FormScopeState> {
+  private formId = '';
+
   constructor(props: Readonly<FormScopeProps>) {
     super(props);
 
@@ -17,17 +20,19 @@ class FormScope extends PureComponent<FormScopeProps, FormScopeState> {
       btnResetLoading: false,
     };
 
+    this.formId = `antd-ext-form-${getRandomId()}`;
+
     this.onSearch = this.onSearch.bind(this);
     this.onReset = this.onReset.bind(this);
   }
 
-  onReset() {
+  onReset(): void {
     this.setState(
       {
         btnResetLoading: true,
       },
       async () => {
-        const { form, onReset = () => { } } = this.props;
+        const { form, onReset = (): undefined => undefined } = this.props;
         form.resetFields();
         await onReset();
         this.setState({ btnResetLoading: false });
@@ -35,14 +40,14 @@ class FormScope extends PureComponent<FormScopeProps, FormScopeState> {
     );
   }
 
-  onSearch(e: FormEvent<HTMLElement>) {
+  onSearch(e: FormEvent<HTMLElement>): void {
     e.preventDefault();
     this.setState(
       {
         btnSearchLoading: true,
       },
       async () => {
-        const { form, onSearch = () => { } } = this.props;
+        const { form, onSearch = (): undefined => undefined } = this.props;
         const values = form.getFieldsValue();
         await onSearch(values);
         this.setState({ btnSearchLoading: false });
@@ -50,13 +55,14 @@ class FormScope extends PureComponent<FormScopeProps, FormScopeState> {
     );
   }
 
-  render() {
-    let {
+  render(): JSX.Element {
+    const {
       gutter = 10,
       formItemList = [],
       needBtnGroup = true,
       btnSpan = 8,
       form,
+      autoGetContainer = true,
       onSearch,
       onReset,
       onSubmit = this.onSearch,
@@ -66,22 +72,22 @@ class FormScope extends PureComponent<FormScopeProps, FormScopeState> {
 
     const { btnSearchLoading, btnResetLoading } = this.state;
 
-    className += ' antd-ext-form';
+    const $className = `${className} antd-ext-form`;
 
     return (
-      <Form className={className} onSubmit={onSubmit} {...resetProps}>
+      <Form id={this.formId} className={$className} onSubmit={onSubmit} {...resetProps}>
         <Row gutter={gutter}>
           {formItemList.map((formItemProps) => {
             const { formItem, component } = formItemProps;
-            const { offset, span = 8, hidden = false, } = formItem;
+            const { offset, span = 8, hidden = false, visible = true } = formItem;
             const { key } = component;
 
             // 如果设置hidden 那么不渲染此项
             if (hidden) return null;
 
             return (
-              <Col key={key} span={span} offset={offset}>
-                {createFormItem(formItemProps, form, className, resetProps.layout)}
+              <Col key={key} span={span} offset={offset} style={visible ? {} : { display: 'none' }}>
+                {createFormItem(formItemProps, form, this.formId, autoGetContainer, resetProps.layout)}
               </Col>
             );
           })}
@@ -109,6 +115,9 @@ class FormScope extends PureComponent<FormScopeProps, FormScopeState> {
 
 export { FormScope };
 
-const FormScopeWrapper = Form.create<FormScopeProps>()(FormScope);
+const FormScopeWrapper = Form.create<FormScopeProps>({
+  onFieldsChange: (props, changedFields) => props.onFieldsChange && props.onFieldsChange(props, changedFields),
+  onValuesChange: (props, changedValues, allValues) => props.onValuesChange && props.onValuesChange(props, changedValues, allValues),
+})(FormScope);
 
 export default FormScopeWrapper;

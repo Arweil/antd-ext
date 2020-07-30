@@ -1,12 +1,15 @@
+@import '@/style/config.scss';
+
 $form: 'antd-ext-form';
 
 .#{$form} {
+  position: relative;
 }
 
 .#{$form}-item-flex {
   display: flex !important;
 
-  .ant-form-item-control-wrapper {
+  .#{$prefix}-form-item-control-wrapper {
     flex: 1;
   }
 }

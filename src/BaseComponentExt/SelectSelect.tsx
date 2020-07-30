@@ -1,14 +1,14 @@
 import React, { PureComponent } from 'react';
 import { Input } from 'antd';
-import SelectExt, { SelectExtend } from './SelectExt';
 import { SelectValue } from 'antd/lib/select';
+import SelectExt, { SelectExtend } from './SelectExt';
 
 const InputGroup = Input.Group;
 
 export interface SelectSelectProps<SelectValueBeforeType = SelectValue, SelectValueAfterType = SelectValue> {
   value?: { // 默认值
-    selectValueBefore?: SelectValueBeforeType,
-    selectValueAfter?: SelectValueAfterType,
+    selectValueBefore?: SelectValueBeforeType;
+    selectValueAfter?: SelectValueAfterType;
   };
   selectPropsBefore?: SelectExtend<SelectValueBeforeType>; // select组件属性
   selectPropsAfter?: SelectExtend<SelectValueAfterType>; // input组件属性
@@ -36,13 +36,13 @@ export default class SelectSelect<
     this.state = {
       selectValueBefore: undefined,
       selectValueAfter: undefined,
-    }
+    };
 
     this.onSelectBeforeChange = this.onSelectBeforeChange.bind(this);
     this.onSelectAfterChange = this.onSelectAfterChange.bind(this);
   }
 
-  static getDerivedStateFromProps(nextProps: any) {
+  static getDerivedStateFromProps(nextProps: any): any {
     if ('value' in nextProps) {
       return {
         ...(nextProps.value || {}),
@@ -52,23 +52,22 @@ export default class SelectSelect<
   }
 
   // 前一个Select onChange
-  onSelectBeforeChange(value: SelectValueBeforeType, option: React.ReactElement<any> | React.ReactElement<any>[]) {
+  onSelectBeforeChange(value: SelectValueBeforeType, option: React.ReactElement<any> | React.ReactElement<any>[]): void {
     const { selectPropsBefore } = this.props;
-    const { selectValueAfter } = this.state;
 
     selectPropsBefore && selectPropsBefore.onChange && selectPropsBefore.onChange(value, option);
 
     if (!('value' in this.props)) {
       this.setState({ selectValueBefore: value }, () => {
-        this.onChange({ selectValueBefore: value, selectValueAfter });
+        this.onChange({ selectValueBefore: value, selectValueAfter: undefined });
       });
     } else {
-      this.onChange({ selectValueBefore: value, selectValueAfter });
+      this.onChange({ selectValueBefore: value, selectValueAfter: undefined });
     }
   }
 
   // 后一个Select onChange
-  onSelectAfterChange(value: SelectValueAfterType, option: React.ReactElement<any> | React.ReactElement<any>[]) {
+  onSelectAfterChange(value: SelectValueAfterType, option: React.ReactElement<any> | React.ReactElement<any>[]): void {
     const { selectPropsAfter } = this.props;
     const { selectValueBefore } = this.state;
 
@@ -83,24 +82,24 @@ export default class SelectSelect<
     }
   }
 
-  onChange(params: { selectValueBefore?: SelectValueBeforeType; selectValueAfter?: SelectValueAfterType }) {
+  onChange(params: { selectValueBefore?: SelectValueBeforeType; selectValueAfter?: SelectValueAfterType }): void {
     const { onChange } = this.props;
     onChange && onChange(params);
   }
 
-  render() {
+  render(): JSX.Element {
     const { selectPropsBefore, selectPropsAfter, showSelectBefore, showSelectAfter } = this.props;
     const { selectValueBefore, selectValueAfter } = this.state;
 
-    const _showSelectBefore = showSelectBefore === undefined || showSelectBefore;
-    const _showSelectAfter = showSelectAfter === undefined || showSelectAfter;
+    const $showSelectBefore = showSelectBefore === undefined || showSelectBefore;
+    const $showSelectAfter = showSelectAfter === undefined || showSelectAfter;
 
     return (
       <InputGroup compact>
         {
-          _showSelectBefore ? (
+          $showSelectBefore ? (
             <SelectExt<SelectValueBeforeType>
-              style={{ width: _showSelectAfter ? '50%' : '100%' }}
+              style={{ width: $showSelectAfter ? '50%' : '100%' }}
               optionAll={false}
               value={selectValueBefore}
               {...selectPropsBefore}
@@ -109,9 +108,9 @@ export default class SelectSelect<
           ) : null
         }
         {
-          _showSelectAfter ? (
+          $showSelectAfter ? (
             <SelectExt<SelectValueAfterType>
-              style={{ width: _showSelectBefore ? '50%' : '100%' }}
+              style={{ width: $showSelectBefore ? '50%' : '100%' }}
               optionAll={false}
               value={selectValueAfter}
               {...selectPropsAfter}
@@ -120,6 +119,6 @@ export default class SelectSelect<
           ) : null
         }
       </InputGroup>
-    )
+    );
   }
 }

@@ -1,7 +1,7 @@
-import React, { PureComponent } from 'react'
+import React, { PureComponent } from 'react';
 import { Form, Row, Col, Dropdown, Icon, Menu } from 'antd';
 import _ from 'lodash';
-import { WrappedFormUtils } from 'antd/lib/form/Form';
+import { WrappedFormUtils, FormComponentProps } from 'antd/lib/form/Form';
 import { setStateAsync } from '@/utils/reactExt';
 import { AllFItemCompsType, createFormItem } from '../FormExt/FormItem';
 import ButtonExt from '../BaseComponentExt/ButtonExt';
@@ -19,7 +19,7 @@ export interface AddedField extends FieldConf {
   compConf: AllFItemCompsType;
 }
 
-export interface DynamicFormFieldsProps {
+export interface DynamicFormFieldsProps extends FormComponentProps {
   form: WrappedFormUtils;
   fieldConfList: FieldConf[];
   onAddField?: (addField: FieldConf, addedFields: AddedField[]) => Promise<AllFItemCompsType>;
@@ -36,14 +36,14 @@ class DynamicFormFields extends PureComponent<DynamicFormFieldsProps, DynamicFor
 
     this.state = {
       addingField: false,
-    }
+    };
 
     this.onAdd = this.onAdd.bind(this);
     this.onDelete = this.onDelete.bind(this);
   }
 
   // 添加字段
-  async onAdd({ key }: { key: string }) {
+  async onAdd({ key }: { key: string }): Promise<void> {
     try {
       await setStateAsync(this, { addingField: true });
 
@@ -74,7 +74,7 @@ class DynamicFormFields extends PureComponent<DynamicFormFieldsProps, DynamicFor
   }
 
   // 删除字段
-  async onDelete(id: string) {
+  async onDelete(id: string): Promise<void> {
     const { form, onDelete } = this.props;
     const addedFieldList: AddedField[] = form.getFieldValue(formkeys);
 
@@ -90,7 +90,7 @@ class DynamicFormFields extends PureComponent<DynamicFormFieldsProps, DynamicFor
     });
   }
 
-  render() {
+  render(): JSX.Element {
     const { form, fieldConfList } = this.props;
     const { addingField } = this.state;
 
@@ -129,13 +129,13 @@ class DynamicFormFields extends PureComponent<DynamicFormFieldsProps, DynamicFor
                     {createFormItem(compConf, form, 'antd-ext-modal-batch-edit')}
                   </Col>
                   <Col span={2}>
-                    {/* 
+                    {/*
                       // @ts-ignore */}
                     <ButtonExt
                       type="danger"
                       icon="delete"
                       style={{ marginTop: 3 }}
-                      onClick={() => {
+                      onClick={(): void => {
                         this.onDelete(field);
                       }}
                     />
@@ -151,6 +151,7 @@ class DynamicFormFields extends PureComponent<DynamicFormFieldsProps, DynamicFor
               <Col>
                 <FormItem>
                   <Dropdown
+                    trigger={['click']}
                     overlay={
                       (
                         <Menu onClick={this.onAdd}>
@@ -163,8 +164,6 @@ class DynamicFormFields extends PureComponent<DynamicFormFieldsProps, DynamicFor
                       )
                     }
                   >
-                    {/* 
-                      // @ts-ignore */}
                     <ButtonExt isAsyncClick loading={addingField}>
                       添加字段
                       <Icon type="down" />
@@ -176,10 +175,10 @@ class DynamicFormFields extends PureComponent<DynamicFormFieldsProps, DynamicFor
           ) : null
         }
       </Form>
-    )
+    );
   }
 }
 
-export default Form.create()(DynamicFormFields);
+export default Form.create<DynamicFormFieldsProps>()(DynamicFormFields);
 
 export { DynamicFormFields as DynamicFormScope };

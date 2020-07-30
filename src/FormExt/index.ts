@@ -1,7 +1,7 @@
 import './style';
-import FormExt, { FormScope } from './FormExt';
+import _ from 'lodash';
 import { FormComponentProps } from 'antd/lib/form';
-import { AllFItemCompsType } from './FormItem';
+import FormExt, { FormScope } from './FormExt';
 
 // 表单验证
 export async function checkForm<
@@ -9,7 +9,7 @@ export async function checkForm<
   FormInstance extends React.Component<FormComponentProps>
 >(formInstanceList: FormInstance[]): Promise<{
   success: true;
-  values: T
+  values: T;
 } | {
   success: false;
   msg: string;
@@ -38,10 +38,7 @@ export async function checkForm<
   try {
     const result = await Promise.all(promiseNeedCheckedList);
     const values = result.reduce((accumulator, currentValue) => {
-      return {
-        ...accumulator,
-        ...currentValue,
-      };
+      return _.merge(accumulator, currentValue);
     });
     return {
       success: true,
@@ -57,7 +54,9 @@ export async function checkForm<
 }
 
 // 获取表单数据，不验证
-export function getFormValue(formInstanceList: FormScope[]) {
+export function getFormValue(formInstanceList: FormScope[]): {
+  [field: string]: any;
+} {
   if (Object.prototype.toString.call(formInstanceList) !== '[object Array]') {
     return {
       success: false,
@@ -68,17 +67,20 @@ export function getFormValue(formInstanceList: FormScope[]) {
   const result = formInstanceList.map(item => item.props.form.getFieldsValue());
 
   const values = result.reduce((accumulator, currentValue) => {
-    return {
-      ...accumulator,
-      ...currentValue,
-    };
+    return _.merge(accumulator, currentValue);
   });
 
   return values;
 }
 
 // 还原表单至 initialValue
-export async function resetForm(formInstanceList: FormScope[]) {
+export async function resetForm(formInstanceList: FormScope[]): Promise<{
+  success: boolean;
+  msg: string;
+} | {
+  success: boolean;
+  msg?: undefined;
+}> {
   if (Object.prototype.toString.call(formInstanceList) !== '[object Array]') {
     return {
       success: false,
@@ -92,10 +94,19 @@ export async function resetForm(formInstanceList: FormScope[]) {
 
   return {
     success: true,
+  };
+}
+
+export function filterNullInFormList(formInstanceList: (FormScope | null)[]): FormScope[] {
+  function isFormScope(params: FormScope | null): params is FormScope {
+    return params !== null;
   }
+
+  // 过滤空的Form对象
+  const finForm = formInstanceList.filter<FormScope>(isFormScope);
+
+  return finForm;
 }
 
 export default FormExt;
-
-export { FormScope, AllFItemCompsType };
 export * from './format';

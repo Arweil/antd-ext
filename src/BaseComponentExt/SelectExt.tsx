@@ -2,18 +2,20 @@ import React, { PureComponent } from 'react';
 import { Select } from 'antd';
 import { OptionProps, SelectValue, SelectProps } from 'antd/lib/select';
 
+export interface FSelectDataList {
+  code: string | number;
+  name: string;
+  disabled?: boolean;
+  title?: string;
+  className?: string;
+}
+
 interface FSelectPropsExt {
   dataMap?: {
     [key: string]: string;
     [key: number]: string;
   };
-  dataList?: {
-    code: string | number;
-    name: string;
-    disabled?: boolean;
-    title?: string;
-    className?: string;
-  }[];
+  dataList?: FSelectDataList[];
   optionAll?: boolean;
 }
 
@@ -21,19 +23,20 @@ export interface SelectExtend<T = SelectValue> extends FSelectPropsExt, SelectPr
 
 const { Option } = Select;
 
-const onFilterOption = (input: string, option: React.ReactElement<OptionProps>) => {
+const onFilterOption = (input: string, option: React.ReactElement<OptionProps>): boolean => {
   if (typeof option.props.children === 'string') {
     return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
   }
-  return option;
+
+  return true;
 };
 
 export default class SelectExt<T = SelectValue> extends PureComponent<SelectExtend<T>, {}> {
-  render() {
+  render(): JSX.Element {
     const {
       dataMap = {}, // 数据源 对象
       dataList = [], // 数据源 数组
-      optionAll = true, // 是否有 "全部"
+      optionAll = false, // 是否有 "全部"
       optionFilterProp = 'children',
       filterOption = onFilterOption,
       ...restProps
@@ -67,6 +70,6 @@ export default class SelectExt<T = SelectValue> extends PureComponent<SelectExte
           })
         }
       </Select>
-    )
+    );
   }
 }

@@ -24,7 +24,7 @@ export default class ButtonExt extends PureComponent<ButtonExtProps, {
     this.onClick = this.onClick.bind(this);
   }
 
-  async onClick(event: React.MouseEvent<any, MouseEvent>) {
+  async onClick(event: React.MouseEvent<any, MouseEvent>): Promise<void> {
     if (this.isClick) {
       return;
     }
@@ -33,7 +33,7 @@ export default class ButtonExt extends PureComponent<ButtonExtProps, {
 
     const { isAsyncClick, onClick } = this.props;
     if (!onClick) {
-      return; 
+      return;
     }
 
     // 如果标记异步，那么自动加入loading
@@ -53,8 +53,8 @@ export default class ButtonExt extends PureComponent<ButtonExtProps, {
     this.isClick = false;
   }
 
-  render() {
-    const { onClick, loading, ...restProps } = this.props;
+  render(): JSX.Element {
+    const { onClick, loading, isAsyncClick, children, ...restProps } = this.props;
     const { fetching } = this.state;
     return (
       <Button
@@ -62,8 +62,8 @@ export default class ButtonExt extends PureComponent<ButtonExtProps, {
         loading={fetching || loading}
         {...restProps}
       >
-        {this.props.children}
+        {children}
       </Button>
-    )
+    );
   }
 }

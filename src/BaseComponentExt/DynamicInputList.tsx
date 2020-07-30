@@ -1,94 +1,127 @@
 import React, { PureComponent } from 'react';
-import InputExt from './InputExt';
+import styled from 'styled-components';
 import { InputProps } from 'antd/lib/input';
 import { Icon } from 'antd';
-import { DynamicInputItem } from './style';
+import InputExt from './InputExt';
+
+const DynamicInputItem = styled.div`
+  margin-top: 4px;
+  margin-bottom: 6px;
+  line-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &:last-child {
+    margin-bottom: 4px;
+  }
+
+  > .anticon {
+    margin-left: 10px;
+    font-size: 18px;
+  }
+`;
 
 export interface DynamicInputListProps {
   inputProps?: InputProps;
   value?: string[];
   onChange?: (values: string[]) => void;
+  disabled?: boolean;
 }
 
-export default class DynamicInputList extends PureComponent<DynamicInputListProps, {
+interface DynamicInputListState {
   valueList: string[];
-}> {
+}
+
+export default class DynamicInputList extends PureComponent<DynamicInputListProps, DynamicInputListState> {
   constructor(props: Readonly<DynamicInputListProps>) {
     super(props);
 
     this.state = {
-      valueList: ['']
-    }
+      valueList: [''],
+    };
 
     this.onAdd = this.onAdd.bind(this);
     this.onDelete = this.onDelete.bind(this);
   }
 
-  static getDerivedStateFromProps(nextProps: DynamicInputListProps) {
+  static getDerivedStateFromProps(nextProps: Readonly<DynamicInputListProps>): DynamicInputListState | null {
     if ('value' in nextProps) {
       return {
-        valueList: nextProps.value || [''],
+        valueList: (nextProps.value && nextProps.value.length) ? nextProps.value : [''],
       };
     }
     return null;
   }
 
-  onAdd(index: number) {
+  onAdd(): void {
     const { valueList } = this.state;
     const finVals = [...valueList, ''];
     this.setState({
       valueList: finVals,
     }, () => {
-      this.props.onChange && this.props.onChange(finVals);
+      const { onChange } = this.props;
+      onChange && onChange(finVals);
     });
   }
 
-  onDelete(index: number) {
+  onDelete(index: number): void {
     const { valueList } = this.state;
     const finVals = valueList.filter((item, _index) => {
       return index !== _index;
     });
-    
+
     this.setState({
       valueList: finVals,
     }, () => {
-      this.props.onChange && this.props.onChange(finVals);
+      const { onChange } = this.props;
+      onChange && onChange(finVals);
     });
   }
 
-  onChange(e: React.ChangeEvent<HTMLInputElement>, index: number) {
+  onChange(e: React.ChangeEvent<HTMLInputElement>, index: number): void {
     const { valueList } = this.state;
     const finValueList = [...valueList];
-    finValueList[index] = e.target.value; 
+    finValueList[index] = e.target.value;
 
     this.setState({
       valueList: finValueList,
     }, () => {
-      this.props.onChange && this.props.onChange(finValueList);
+      const { onChange } = this.props;
+      onChange && onChange(finValueList);
     });
   }
 
-  render() {
-    const { inputProps } = this.props;
+  render(): JSX.Element {
+    const { inputProps, disabled } = this.props;
     const { valueList } = this.state;
+
     return (
       <div>
         {
           valueList.map((value, index) => {
             return (
-              <DynamicInputItem>
-                <InputExt {...inputProps} value={value} onChange={(event) => this.onChange(event, index)} />
-                <Icon type="plus-circle" onClick={() => this.onAdd(index)} />
+              // eslint-disable-next-line react/no-array-index-key
+              <DynamicInputItem key={index}>
+                <InputExt
+                  {...inputProps}
+                  disabled={disabled}
+                  value={value}
+                  onChange={(event): void => this.onChange(event, index)}
+                />
                 {
-                  valueList.length > 1 ? (
-                    <Icon type="minus-circle" onClick={() => this.onDelete(index)} />
+                  disabled ? null : <Icon type="plus-circle" onClick={this.onAdd} />
+                }
+                {
+                  (valueList.length > 1 && !disabled) ? (
+                    <Icon type="minus-circle" onClick={(): void => this.onDelete(index)} />
                   ) : null
                 }
               </DynamicInputItem>
-            )
+            );
           })
         }
       </div>
-    )
+    );
   }
 }

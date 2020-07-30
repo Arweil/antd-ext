@@ -5,12 +5,14 @@ interface NotificationRedirectProps extends ArgsProps {
   goFun: () => void;
 }
 
-export function notificationRedirect(params: NotificationRedirectProps) {
+export function notificationRedirect(params: NotificationRedirectProps): void {
   const key = `${new Date().getTime()}${Math.random().toString().slice(-6)}`;
   const { goFun, ...notificationProps } = params;
 
+  let timer = 0;
+
   // 清除计时器
-  function goToDeskWrapper() {
+  function goToDeskWrapper(): void {
     if (timer) {
       clearTimeout(timer);
     }
@@ -18,7 +20,7 @@ export function notificationRedirect(params: NotificationRedirectProps) {
     goFun();
   }
 
-  const timer = setTimeout(() => {
+  timer = setTimeout(() => {
     notification.close(key);
     goToDeskWrapper();
   }, notificationProps.duration);
@@ -30,6 +32,6 @@ export function notificationRedirect(params: NotificationRedirectProps) {
     onClick: () => {
       notificationProps.onClick && notificationProps.onClick();
       goToDeskWrapper();
-    }
+    },
   });
 }

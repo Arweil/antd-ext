@@ -1,50 +1,20 @@
 import React from 'react';
 import { Form } from 'antd';
-import { WrappedFormUtils, GetFieldDecoratorOptions } from 'antd/lib/form/Form';
+import _ from 'lodash';
+import { WrappedFormUtils } from 'antd/lib/form/Form';
+import { FormItemProps } from 'antd/lib/form';
 import {
-  BaseFormItemProps, CompExtendsProps,
-} from "./types";
+  FItemInputProps, FItemSearchProps, FItemTextAreaProps, FItemDatePickerProps, FItemRangePickerProps,
+  FItemSelectProps, FItemRadioGroupProps, FItemCheckboxGroupProps, FItemExtraProps, FInputProps, FSearchProps,
+  FTextAreaProps, FDatePickerProps, FRangePickerProps, FSelectProps, FRadioGroupProps, FCheckboxGroupProps,
+} from './types';
+import FSelect from './FSelect';
+import FInput from './FInput';
+import FDatePicker from './FDatePicker';
+import FRadioGroup from './FRadioGroup';
+import FCheckboxGroup from './FCheckboxGroup';
 
-import FSelect, { SelectExtendsProps, FSelectProps } from './FSelect';
-import FInput, { InputExtendsProps, TextAreaExtendsProps, SearchExtendsProps, FInputProps, FSearchProps, FTextAreaProps } from './FInput';
-import FDatePicker, { DatePickerExtendsProps, RangePickerExtendsProps, FDatePickerProps, FRangePickerProps } from './FDatePicker';
-
-type typeLayout = "inline" | "horizontal" | "vertical";
-
-export interface ExtraExtendsProps extends CompExtendsProps {
-  type: 'extra',
-  compProps?: any,
-  render: (params: { form: WrappedFormUtils; key: string; formClassName: string; decoratorOpt?: GetFieldDecoratorOptions; compProps?: any; }) => React.ReactNode;
-};
-
-export interface FItemInputProps extends BaseFormItemProps {
-  component: InputExtendsProps;
-}
-
-export interface FItemTextAreaProps extends BaseFormItemProps {
-  component: TextAreaExtendsProps;
-}
-
-export interface FItemSearchProps extends BaseFormItemProps {
-  component: SearchExtendsProps;
-}
-
-export interface FItemDatePickerProps extends BaseFormItemProps {
-  component: DatePickerExtendsProps;
-}
-
-export interface FItemRangePickerProps extends BaseFormItemProps {
-  component: RangePickerExtendsProps;
-}
-
-export interface FItemSelectProps extends BaseFormItemProps {
-  component: SelectExtendsProps;
-}
-
-// Extra component 自定义组件
-export interface FItemExtraProps extends BaseFormItemProps {
-  component: ExtraExtendsProps;
-}
+type typeLayout = 'inline' | 'horizontal' | 'vertical';
 
 export type NormalCompsType =
   FInputProps
@@ -52,12 +22,14 @@ export type NormalCompsType =
   | FTextAreaProps
   | FDatePickerProps
   | FRangePickerProps
-  | FSelectProps;
+  | FSelectProps
+  | FRadioGroupProps
+  | FCheckboxGroupProps;
 
-export type NormalFItemCompsType = 
+export type NormalFItemCompsType =
   FItemInputProps | FItemSearchProps | FItemTextAreaProps |
   FItemDatePickerProps | FItemRangePickerProps |
-  FItemSelectProps;
+  FItemSelectProps | FItemRadioGroupProps | FItemCheckboxGroupProps;
 
 export type AllFItemCompsType = NormalFItemCompsType | FItemExtraProps;
 
@@ -68,7 +40,7 @@ const defaultFormItemLayout = {
   wrapperCol: { span: 18 },
 };
 
-function formItemSwitch(args: NormalCompsType) {
+function formItemSwitch(args: NormalCompsType): React.ReactNode {
   switch (args.type) {
     case 'input':
     case 'search':
@@ -79,26 +51,51 @@ function formItemSwitch(args: NormalCompsType) {
     case 'datePicker':
     case 'rangePicker':
       return FDatePicker(args);
+    case 'radioGroup':
+      return FRadioGroup(args);
+    case 'checkboxGroup':
+      return FCheckboxGroup(args);
+    default: return null;
   }
 }
 
-function renderNormalComp(
-  { formItem, component }: NormalFItemCompsType,
-  form: WrappedFormUtils,
-  formClassName: string,
-  layout?: typeLayout,
-) {
-  const {
-    offset,
-    span = 8,
-    noFormItemLayout,
-    ...resetProps
-  } = formItem;
-  const { type } = component;
+// 渲染label
+function renderLabel(label: React.ReactNode): React.ReactNode {
+  let $label: React.ReactNode = label;
+  // 如果label是数组
+  if (_.isArray(label)) {
+    $label = (
+      <div style={{ display: 'inline-block', lineHeight: 'initial' }}>
+        {
+          label.map((item, index) => {
+            if (index === label.length - 1) {
+              return item;
+            } else {
+              return (
+                <>
+                  {item}
+                  <br />
+                </>
+              );
+            }
+          })
+        }
+      </div>
+    );
+  }
 
+  return $label;
+}
+
+function initColSpan(params: {
+  noFormItemLayout?: boolean;
+  resetProps: FormItemProps;
+  layout?: typeLayout;
+}): void {
+  const { noFormItemLayout, layout, resetProps } = params;
   // FormItem 属性
   if (!noFormItemLayout) {
-    if (layout !== 'inline') {
+    if (layout !== 'inline' && layout !== 'vertical') {
       resetProps.labelCol = resetProps.labelCol || defaultFormItemLayout.labelCol;
       resetProps.wrapperCol = resetProps.wrapperCol || defaultFormItemLayout.wrapperCol;
     }
@@ -107,18 +104,60 @@ function renderNormalComp(
     resetProps.labelCol = undefined;
     resetProps.wrapperCol = undefined;
   }
+}
+
+function renderNormalComp(
+  { formItem, component }: NormalFItemCompsType,
+  form: WrappedFormUtils,
+  formId: string,
+  autoGetContainer: boolean,
+  layout?: typeLayout,
+): JSX.Element {
+  const {
+    offset,
+    span = 8,
+    noFormItemLayout,
+    label,
+    ...resetProps
+  } = formItem;
+  const { type } = component;
+
+  initColSpan({
+    noFormItemLayout,
+    resetProps,
+    layout,
+  });
 
   // datePicker 和 rangePicker 的 placeholder特殊处理
-  if (type !== 'datePicker' && type !== 'rangePicker') {
+  // radioGroup、checkboxGroup 不存在 placeholder
+  if (type !== 'datePicker'
+    && type !== 'rangePicker'
+    && component.type !== 'radioGroup'
+    && component.type !== 'checkboxGroup') {
     // 如果没有placeholder 那么直接使用label
     component.placeholder = component.disabled ? '' : (component.placeholder || formItem.label);
   }
 
+  const $label = renderLabel(label);
+
+  // help 优先级
+  // 1. 错误提示
+  // 2. formItem.help
+  const errors = form.getFieldError(component.key);
+  resetProps.help = errors ? (
+    <React.Fragment>
+      {errors.join(',')}
+      {resetProps.help ? `，${resetProps.help}` : null}
+    </React.Fragment>
+  ) : resetProps.help;
+  resetProps.validateStatus = errors ? 'error' : resetProps.validateStatus;
+
   return (
-    <FormItem {...resetProps}>
+    <FormItem label={$label} {...resetProps}>
       {
         formItemSwitch({
-          formClassName,
+          formId,
+          autoGetContainer,
           rcform: form,
           ...component,
         })
@@ -130,28 +169,25 @@ function renderNormalComp(
 function renderExtraComp(
   { formItem, component }: FItemExtraProps,
   form: WrappedFormUtils,
-  formClassName: string,
+  formId: string,
   layout?: typeLayout,
-) {
-  const { offset, span = 8, noFormItemLayout, ...resetProps } = formItem;
+): JSX.Element {
+  const { offset, span = 8, noFormItemLayout, label, ...resetProps } = formItem;
   const { key, decoratorOpt, compProps } = component;
 
   // FormItem 属性
-  if (!noFormItemLayout) {
-    if (layout !== 'inline') {
-      resetProps.labelCol = resetProps.labelCol || defaultFormItemLayout.labelCol;
-      resetProps.wrapperCol = resetProps.wrapperCol || defaultFormItemLayout.wrapperCol;
-    }
-  } else {
-    resetProps.className += ' antd-ext-form-item-flex';
-    resetProps.labelCol = undefined;
-    resetProps.wrapperCol = undefined;
-  }
+  initColSpan({
+    noFormItemLayout,
+    resetProps,
+    layout,
+  });
+
+  const $label = renderLabel(label);
 
   return (
-    <FormItem {...resetProps}>
+    <FormItem label={$label} {...resetProps}>
       {
-        component.render({ form, key, formClassName, decoratorOpt, compProps })
+        component.render({ form, key, formId, decoratorOpt, compProps })
       }
     </FormItem>
   );
@@ -160,38 +196,26 @@ function renderExtraComp(
 function createFormItem(
   { formItem, component }: AllFItemCompsType,
   form: WrappedFormUtils,
-  formClassName: string,
+  formId: string,
+  autoGetContainer: boolean,
   layout?: typeLayout,
 ): React.ReactNode {
-  if (component.type === 'input') {
-    return renderNormalComp({ formItem, component }, form, formClassName, layout);
+  switch (component.type) {
+    case 'input':
+    case 'search':
+    case 'textarea':
+    case 'select':
+    case 'datePicker':
+    case 'rangePicker':
+    case 'radioGroup':
+    case 'checkboxGroup':
+      // @ts-ignore TODO: fix component type
+      return renderNormalComp({ formItem, component }, form, formId, autoGetContainer, layout);
+    case 'extra':
+      return renderExtraComp({ formItem, component }, form, formId, layout);
+    default:
+      return (): null => null;
   }
-
-  if (component.type === 'search') {
-    return renderNormalComp({ formItem, component }, form, formClassName, layout);
-  }
-
-  if (component.type === 'textarea') {
-    return renderNormalComp({ formItem, component }, form, formClassName, layout);
-  }
-
-  if (component.type === 'select') {
-    return renderNormalComp({ formItem, component }, form, formClassName, layout);
-  }
-  
-  if (component.type === 'datePicker') {
-    return renderNormalComp({ formItem, component }, form, formClassName, layout);
-  }
-
-  if (component.type === 'rangePicker') {
-    return renderNormalComp({ formItem, component }, form, formClassName, layout);
-  }
-
-  if (component.type === 'extra') {
-    return renderExtraComp({ formItem, component }, form, formClassName, layout);
-  }
-
-  return () => null;
 }
 
 export { createFormItem };

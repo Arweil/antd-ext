@@ -1,9 +1,7 @@
 import { checkForm } from '../FormExt';
-import DynamicFormFields, { formkeys, DynamicFormScope, FieldConf, AddedField } from './DynamicFormFields';
+import DynamicFormFields, { DynamicFormScope, formkeys, FieldConf } from './DynamicFormFields';
 
 export default DynamicFormFields;
-
-export { formkeys, AddedField, FieldConf, DynamicFormScope };
 
 // 过滤字段，返回表单值
 export async function getFilterFormValues(formInstanceList: DynamicFormScope[]) {

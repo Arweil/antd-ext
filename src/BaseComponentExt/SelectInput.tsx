@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react';
 import { Input } from 'antd';
-import SelectExt, { SelectExtend } from './SelectExt';
-import InputExt from './InputExt';
 import { SelectValue } from 'antd/lib/select';
 import { InputProps } from 'antd/lib/input';
+import SelectExt, { SelectExtend } from './SelectExt';
+import InputExt from './InputExt';
 
 const InputGroup = Input.Group;
 
@@ -11,14 +11,14 @@ type InputValueType = string | number | string[];
 
 export interface SelectInputProps<SelectValueType = SelectValue> {
   value?: { // 默认值
-    selectValue?: SelectValueType,
-    inputValue?: InputValueType,
+    selectValue?: SelectValueType;
+    inputValue?: InputValueType;
   };
   selectProps?: SelectExtend<SelectValueType>; // select组件属性
   inputProps?: InputProps; // input组件属性
   showSelect?: boolean; // 是否显示Select
   showInput?: boolean; // 是否显示Input
-  onChange?: (params: { selectValue?: SelectValueType; inputValue?: InputValueType } ) => void; // 重写onChange事件
+  onChange?: (params: { selectValue?: SelectValueType; inputValue?: InputValueType }) => void; // 重写onChange事件
 }
 
 interface SelectInputState<SelectValueType> {
@@ -30,8 +30,8 @@ export default class SelectInput<
     SelectValueType = SelectValue,
   >
   extends PureComponent<
-    SelectInputProps<SelectValueType>,
-    SelectInputState<SelectValueType>
+  SelectInputProps<SelectValueType>,
+  SelectInputState<SelectValueType>
   > {
   constructor(props: Readonly<SelectInputProps<SelectValueType>>) {
     super(props);
@@ -39,10 +39,13 @@ export default class SelectInput<
     this.state = {
       selectValue: undefined,
       inputValue: undefined,
-    }
+    };
+
+    this.onSelectChange = this.onSelectChange.bind(this);
+    this.onInputChange = this.onInputChange.bind(this);
   }
 
-  static getDerivedStateFromProps(nextProps: any) {
+  static getDerivedStateFromProps(nextProps: any): any {
     if ('value' in nextProps) {
       return {
         ...(nextProps.value || {}),
@@ -51,7 +54,7 @@ export default class SelectInput<
     return null;
   }
 
-  onSelectChange = (value: SelectValueType, option: React.ReactElement<any> | React.ReactElement<any>[]) => {
+  onSelectChange(value: SelectValueType, option: React.ReactElement<any> | React.ReactElement<any>[]): void {
     const { selectProps } = this.props;
     const { inputValue } = this.state;
 
@@ -66,11 +69,11 @@ export default class SelectInput<
     }
   }
 
-  onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  onInputChange(e: React.ChangeEvent<HTMLInputElement>): void {
     const { inputProps } = this.props;
     const { selectValue } = this.state;
 
-    const value = e.target.value;
+    const { value } = e.target;
 
     inputProps && inputProps.onChange && inputProps.onChange(e);
 
@@ -83,24 +86,24 @@ export default class SelectInput<
     }
   }
 
-  onChange(params: { selectValue?: SelectValueType; inputValue?: InputValueType }) {
+  onChange(params: { selectValue?: SelectValueType; inputValue?: InputValueType }): void {
     const { onChange } = this.props;
     onChange && onChange(params);
   }
 
-  render() {
+  render(): JSX.Element {
     const { selectProps, inputProps, showSelect, showInput } = this.props;
     const { selectValue, inputValue } = this.state;
 
-    const _showSelect = showSelect === undefined || showSelect;
-    const _showInput = showInput === undefined || showInput;
+    const $showSelect = showSelect === undefined || showSelect;
+    const $showInput = showInput === undefined || showInput;
 
     return (
       <InputGroup compact>
         {
-          _showSelect ? (
+          $showSelect ? (
             <SelectExt<SelectValueType>
-              style={{ width: _showInput ? '50%' : '100%' }}
+              style={{ width: $showInput ? '50%' : '100%' }}
               optionAll={false}
               value={selectValue}
               {...selectProps}
@@ -109,9 +112,9 @@ export default class SelectInput<
           ) : null
         }
         {
-          _showInput ? (
+          $showInput ? (
             <InputExt
-              style={{ width: _showSelect ? '50%' : '100%' }}
+              style={{ width: $showSelect ? '50%' : '100%' }}
               value={inputValue}
               {...inputProps}
               onChange={this.onInputChange}
@@ -119,7 +122,6 @@ export default class SelectInput<
           ) : null
         }
       </InputGroup>
-    )
+    );
   }
 }
-
